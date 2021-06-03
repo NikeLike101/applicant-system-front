@@ -1,0 +1,46 @@
+.block-container
+    .auth-profile
+        .auth-profile_wrapper
+            h3.auth-profile_title Личные данные
+            .auth-profile_container 
+                .auth-input_name.jc-sb.f
+                    .auth-input.f.f-col
+                        label.f(for='surname') Фамилия
+                            .__red *
+                        input(type='text' id='surname' name='surname')
+                    .auth-input.f.f-col
+                        label.f(for='name') Имя
+                            .__red *
+                        input(type='text' id='name' name='name')
+                    .auth-input.f.f-col
+                        label.f(for='lastname') Отчество
+                            .__red *
+                        input(type='text' id='lastname' name='lastname')
+                .auth-input_file.f.f-col 
+                    label(for="file")  Загрузить вашу фотографию
+                    input(type="file" name="file" id="file" accept=".jpg, .jpeg, .png")
+                .auth-input_bullet.f.f-col
+                    .auth-input_bullet-text.f Пол 
+                        .__red *
+                    .auth-input_bullet-container.f
+                        .auth-input_bullet-item.sex-item.active М
+                        .auth-input_bullet-item.sex-item Ж
+                .auth-input_wrapper 
+                    .auth-input.f.f-col
+                        label.f(for='date') Дата рождения
+                            .__red *
+                        input(type='date' id='date' name='date' max='2007-12-31')
+                    .auth-input.f.f-col
+                        label.f(for='registrate-place') Место регистрации
+                            .__red *
+                        input(type='text' id='registrate_place' name='registrate_place')
+                    .auth-input.f.f-col
+                        label.f(for='living-place') Место проживания
+                            .__red *
+                        input(type='text' id='living_place' name='living_place')
+                    .auth-input.f.f-col
+                        label(for='tel') Мобильный номер
+                        input(type='tel' id='tel' name='tel')
+                .auth-next#first-next.f Перейти далее
+                    .auth-container_img
+                        img(src="/img/svg/arrow-next.svg", alt="")

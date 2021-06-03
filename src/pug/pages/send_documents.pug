@@ -1,0 +1,10 @@
+extends ../layout/layout.pug
+block vars
+    - var title = 'Подать документов';
+
+block container 
+    include ../includes/container.pug
+        block header
+            include ../includes/header.pug
+        block content
+            include ../includes/send_documents/content.pug 

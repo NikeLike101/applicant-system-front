@@ -1,0 +1,31 @@
+.block-container
+    .post-filters_main.f
+        .auth-input_bullet.f 
+                .auth-input_bullet-container.f
+                    .auth-input_bullet-item.ei-item.active ВУЗ
+                    .auth-input_bullet-item.ei-item СУЗ
+        .post-filters_place 
+            select.post-filters_place-item#region
+                option(value="", selected) Область
+                option(value="Минск") Минск
+                option(value="Минская") Минская
+                option(value="Брестская") Брестская
+                option(value="Гродненская") Гродненская
+                option(value="Гомельская") Гомельская
+                option(value="Могильевская") Могильевская
+                option(value="Витебская") Витебская
+            select.post-filters_place-item#name
+                option(value="", selected) Наименования УО
+                
+    .post-filters_spec.f.m-t10
+        .auth-input.f.ai
+            label(for="spec" class='m-r10') Специальность
+            input(type="text" name='spec' id='spec')
+        .auth-input_bullet.f.f-col
+                .auth-input_bullet-text.f На основе
+                .auth-input_bullet-container.f
+                    .auth-input_bullet-item.active Платной
+                    .auth-input_bullet-item Бюджетной
+    //- .post-filters_spec__add Добавить еще одну специальность
+    .post-send Отравить заявление на регистрацию
+    .post-info Зачисление происходит только при поданных оригиналах документов в учреждение образования

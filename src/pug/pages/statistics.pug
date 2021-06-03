@@ -1,0 +1,10 @@
+extends ../layout/layout.pug
+block vars
+    - var title = 'Статистика';
+
+block container 
+    include ../includes/container.pug
+        block header
+            include ../includes/header.pug
+        block content
+            include ../includes/statistics/content.pug 
