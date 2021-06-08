@@ -519,7 +519,7 @@ const doTask = async (info) => {
       alertWindow
         .querySelector("#alert-first")
         .addEventListener("click", () => {
-          document.location.href = "http://localhost:3000/auth-profile.html";
+          document.location.href = "/auth-profile.html";
         });
     }
   }
@@ -586,7 +586,7 @@ if (authContainer) {
     clearParent(authContainer);
     authContainer.innerHTML =
       "<div class = 'auth-reg f sc f-col'>" +
-      "<a href='http://localhost:3000/auth-profile.html' class='auth-reg_link tac'>Редактировать/ввести личные данные</a>" +
+      "<a href='/auth-profile.html' class='auth-reg_link tac'>Редактировать/ввести личные данные</a>" +
       "<div class='auth-reg_link tac' id='logout'>Выйти</div>" +
       "</div>";
 
@@ -690,7 +690,7 @@ if (authContainer) {
           doTask(logIn(data));
           // TEST
           if (entryStatus)
-            document.location.href = "http://localhost:3000/auth-profile.html";
+            document.location.href = "/auth-profile.html";
           // doTask(myProfile())
           // console.log(localStorage.getItem('email'))
           // window.location.reload(true)
@@ -730,7 +730,7 @@ if (!authContainer && !authProfile) {
           blockContainer.innerHTML =
             "<div class='block-auth f f-col ai'>" +
             "<p>Для пользования ресурсами сайта необходимо заполнить профиль, для продолжения нажмите 'Согласен'</p>" +
-            "<a href='http://localhost:3000/auth-profile.html' class='block-auth_container'>" +
+            "<a href='/auth-profile.html' class='block-auth_container'>" +
             "<div class='block-auth_confirm'>Согласен</div>" +
             "</a>" +
             "</div>";
@@ -742,7 +742,7 @@ if (!authContainer && !authProfile) {
       blockContainer.innerHTML =
         "<div class='block-auth f f-col ai'>" +
         "<p>Для пользования ресурсами сайта необходимо зарегестрироваться или войти в аккаунт, для продолжения нажмите 'Согласен'</p>" +
-        "<a href='http://localhost:3000/auth.html' class='block-auth_container'>" +
+        "<a href='/auth.html' class='block-auth_container'>" +
         "<div class='block-auth_confirm'>Согласен</div>" +
         "</a>" +
         "</div>";
@@ -1400,7 +1400,7 @@ if (authProfile) {
 
                       // if (true)
                       // document.location.href =
-                      //   "http://localhost:3000/index.html";
+                      //   "/index.html";
                     });
                 });
             });
