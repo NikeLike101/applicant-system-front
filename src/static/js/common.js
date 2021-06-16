@@ -8,6 +8,9 @@ let news = [];
 let entryStatus = false;
 let profileStatus = false;
 let docFull = false;
+// let reqDebug = 'http://localhost:8000'
+
+let reqDebug = 'http://enrollee.by'
 
 const alertWindow = document.createElement("div");
 alertWindow.classList.add("alert");
@@ -99,10 +102,10 @@ const getWithExpiry = (key) => {
 const myProfileInit = async (data) => {
   if (getWithExpiry("token")) {
     return new Promise((resolve, reject) => {
-      fetch("http://localhost:8000/api/v1/users/profiles/my/", {
+      fetch(reqDebug.concat("/api/v1/users/profiles/my/"), {
         method: "POST",
         headers: {
-          Host: "localhost:8000",
+          Host: reqDebug,
           Authorization: "Bearer " + getWithExpiry("token"),
           Accept: "application/json",
           "Content-Type": "application/json",
@@ -127,10 +130,10 @@ const myProfileInit = async (data) => {
 const myProfileName = async (data) => {
   if (getWithExpiry("token")) {
     return new Promise((resolve, reject) => {
-      fetch("http://localhost:8000/api/v1/users/profiles/my/", {
+      fetch(reqDebug.concat("/api/v1/users/profiles/my/"), {
         method: "PATCH",
         headers: {
-          Host: "localhost:8000",
+          Host: reqDebug,
           Authorization: "Bearer " + getWithExpiry("token"),
           Accept: "application/json",
           "Content-Type": "application/json",
@@ -155,10 +158,10 @@ const myProfileName = async (data) => {
 const myProfilePrivil = async (data) => {
   if (getWithExpiry("token")) {
     return new Promise((resolve, reject) => {
-      fetch("http://localhost:8000/api/v1/users/profiles/my/", {
+      fetch(reqDebug.concat("/api/v1/users/profiles/my/"), {
         method: "PATCH",
         headers: {
-          Host: "localhost:8000",
+          Host: reqDebug,
           Authorization: "Bearer " + getWithExpiry("token"),
           Accept: "application/json",
           "Content-Type": "application/json",
@@ -182,10 +185,10 @@ const myProfilePrivil = async (data) => {
 const myProfilePersonal = async (data) => {
   if (getWithExpiry("token")) {
     return new Promise((resolve, reject) => {
-      fetch("http://localhost:8000/api/v1/users/profiles/my/", {
+      fetch(reqDebug.concat("/api/v1/users/profiles/my/"), {
         method: "PATCH",
         headers: {
-          Host: "localhost:8000",
+          Host: reqDebug,
           Authorization: "Bearer " + getWithExpiry("token"),
           Accept: "application/json",
           "Content-Type": "application/json",
@@ -210,10 +213,10 @@ const myProfilePersonal = async (data) => {
 const myProfileFather = async (data) => {
   if (getWithExpiry("token")) {
     return new Promise((resolve, reject) => {
-      fetch("http://localhost:8000/api/v1/users/profiles/my/", {
+      fetch(reqDebug.concat("/api/v1/users/profiles/my/"), {
         method: "PATCH",
         headers: {
-          Host: "localhost:8000",
+          Host: reqDebug,
           Authorization: "Bearer " + getWithExpiry("token"),
           Accept: "application/json",
           "Content-Type": "application/json",
@@ -238,10 +241,10 @@ const myProfileFather = async (data) => {
 const myProfileMother = async (data) => {
   if (getWithExpiry("token")) {
     return new Promise((resolve, reject) => {
-      fetch("http://localhost:8000/api/v1/users/profiles/my/", {
+      fetch(reqDebug.concat("/api/v1/users/profiles/my/"), {
         method: "PATCH",
         headers: {
-          Host: "localhost:8000",
+          Host: reqDebug,
           Authorization: "Bearer " + getWithExpiry("token"),
           Accept: "application/json",
           "Content-Type": "application/json",
@@ -266,10 +269,10 @@ const myProfileMother = async (data) => {
 const myProfileGrads = async (data) => {
   if (getWithExpiry("token")) {
     return new Promise((resolve, reject) => {
-      fetch("http://localhost:8000/api/v1/users/profiles/my/", {
+      fetch(reqDebug.concat("/api/v1/users/profiles/my/"), {
         method: "PATCH",
         headers: {
-          Host: "localhost:8000",
+          Host: reqDebug,
           Authorization: "Bearer " + getWithExpiry("token"),
           Accept: "application/json",
           "Content-Type": "application/json",
@@ -308,10 +311,10 @@ const myProfileGrads = async (data) => {
 const myProfileSub = async (data) => {
   if (getWithExpiry("token")) {
     return new Promise((resolve, reject) => {
-      fetch("http://localhost:8000/api/v1/users/profiles/my/", {
+      fetch(reqDebug.concat("/api/v1/users/profiles/my/"), {
         method: "PATCH",
         headers: {
-          Host: "localhost:8000",
+          Host: reqDebug,
           Authorization: "Bearer " + getWithExpiry("token"),
           Accept: "application/json",
           "Content-Type": "application/json",
@@ -319,6 +322,7 @@ const myProfileSub = async (data) => {
             "Gzadcved0Ggks9TOH0ckzm3iUTXyO951KwZihb3oPDoYxbrRX5Ia38PqHxuelQQz",
         },
         body: JSON.stringify({
+          average_mark: data?.ct,
           subjects: [
             {
               name: data?.subname1,
@@ -384,10 +388,10 @@ const myProfileGet = async () => {
   console.log(getWithExpiry("token"));
   if (getWithExpiry("token")) {
     return new Promise((resolve, reject) => {
-      fetch("http://localhost:8000/api/v1/users/profiles/my/", {
+      fetch(reqDebug.concat("/api/v1/users/profiles/my/"), {
         method: "GET",
         headers: {
-          Host: "localhost:8000",
+          Host: reqDebug,
           Authorization: "Bearer " + getWithExpiry("token"),
           Accept: "application/json",
           "Content-Type": "application/json",
@@ -407,10 +411,10 @@ const myProfileGet = async () => {
 
 const institutionsGet = async () => {
   return new Promise((resolve, reject) => {
-    fetch("http://localhost:8000/api/v1/institutions/", {
+    fetch(reqDebug.concat("/api/v1/institutions/"), {
       method: "GET",
       headers: {
-        Host: "localhost:8000",
+        Host: reqDebug,
         // Authorization: "Bearer " + getWithExpiry("token"),
         Accept: "application/json",
         "Content-Type": "application/json",
@@ -427,10 +431,10 @@ const institutionsGet = async () => {
 
 const newsGet = async () => {
   return new Promise((resolve, reject) => {
-    fetch("http://localhost:8000/api/v1/documents/articles/", {
+    fetch(reqDebug.concat("/api/v1/documents/articles/"), {
       method: "GET",
       headers: {
-        Host: "localhost:8000",
+        Host: reqDebug,
         // Authorization: "Bearer " + getWithExpiry("token"),
         Accept: "application/json",
         "Content-Type": "application/json",
@@ -447,10 +451,10 @@ const newsGet = async () => {
 
 const signUp = async (form) => {
   return new Promise((resolve, reject) => {
-    fetch("http://localhost:8000/api/v1/users/", {
+    fetch(reqDebug.concat("/api/v1/users/"), {
       method: "POST",
       headers: {
-        Host: "localhost:8000",
+        Host: reqDebug,
         // Authorization:
         //   "Bearer " +
         //   "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjIwMTE5NzQwLCJqdGkiOiIwMzM4OWYwNjI4ZDk0ODhiYTYwOWU5NDI4OWY5ZmYyYSIsInVzZXJfaWQiOjF9.y_LMYmJEvp9tQObj2YUzz8NftoXjwJi64PBD4GWyjxg",
@@ -472,10 +476,10 @@ const signUp = async (form) => {
 
 const logIn = async (form) => {
   return new Promise((resolve, reject) => {
-    fetch("http://localhost:8000/api/v1/users/token/", {
+    fetch(reqDebug.concat("/api/v1/users/token/"), {
       method: "POST",
       headers: {
-        Host: "localhost:8000",
+        Host: reqDebug,
         // Authorization:
         //   "Bearer " +
         //   "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjIwMTE5NzQwLCJqdGkiOiIwMzM4OWYwNjI4ZDk0ODhiYTYwOWU5NDI4OWY5ZmYyYSIsInVzZXJfaWQiOjF9.y_LMYmJEvp9tQObj2YUzz8NftoXjwJi64PBD4GWyjxg",
