@@ -560,8 +560,8 @@ const doTask = async (info) => {
   // if(!getWithExpiry("token"))
 };
 
-const frontAddress = 'http://localhost:3000'
-// const frontAddress = 'enrollee.by'
+// const frontAddress = 'http://localhost:3000'
+const frontAddress = 'enrollee.by'
 
 // doTask(newsGet())
 // console.log(frontAddress.concat('/send_documents.html'))
