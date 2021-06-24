@@ -9,9 +9,9 @@ let eis = []
 let entryStatus = false;
 let profileStatus = false;
 let docFull = false;
-let reqDebug = "http://localhost:8000";
+// let reqDebug = "http://localhost:8000";
 
-// let reqDebug = 'http://enrollee.by'
+let reqDebug = 'http://enrollee.by'
 
 const alertWindow = document.createElement("div");
 alertWindow.classList.add("alert");
@@ -561,11 +561,12 @@ const doTask = async (info) => {
 };
 
 // const frontAddress = 'http://localhost:3000'
-const frontAddress = 'enrollee.by'
+const frontAddress = 'http://enrollee.by'
 
 // doTask(newsGet())
-// console.log(frontAddress.concat('/send_documents.html'))
-// console.log(window.location.href)
+console.log(frontAddress.concat('/send_documents.html'))
+console.log(window.location.href)
+
 if (frontAddress.concat('/index.html') == window.location.href) {
   console.log(document.querySelectorAll('.header-info_item'))
   let items = document.querySelectorAll('.header-info_item')
