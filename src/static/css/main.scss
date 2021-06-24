@@ -100,7 +100,12 @@ body {
 
       &.__main-link {
         background: $mainTheme;
+
+        p {
+          color: #000;
+        }
       }
+
     }
   }
 }
@@ -167,14 +172,17 @@ body {
     cursor: pointer;
     padding: 10px;
     white-space: nowrap;
+    color: #000;
     width: min-content;
   }
 
   &-reg {
     height: 500px;
     width: 100%;
+    color: #000;
 
     &_link {
+      color: #000;
       font-size: 18px;
       background: $mainTheme;
       padding: 10px 20px;
@@ -331,10 +339,12 @@ body {
       }
 
       &-item {
+
         padding: 10px 25px 10px 10px;
         text-align: left;
 
         &.active {
+          color: #000;
           background: $mainTheme;
         }
 
@@ -348,7 +358,13 @@ body {
 
 .docs {
   &-list {
+
+    li {
+      margin-bottom: 10px;
+    }
+
     &_item {
+
     }
   }
 

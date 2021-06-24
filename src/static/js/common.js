@@ -5,12 +5,13 @@ const authContainer = document.querySelector(".auth-container_enter");
 const dayTime = 86400000;
 const second = 600000;
 let news = [];
+let eis = []
 let entryStatus = false;
 let profileStatus = false;
 let docFull = false;
-// let reqDebug = 'http://localhost:8000'
+let reqDebug = "http://localhost:8000";
 
-let reqDebug = 'http://enrollee.by'
+// let reqDebug = 'http://enrollee.by'
 
 const alertWindow = document.createElement("div");
 alertWindow.classList.add("alert");
@@ -347,43 +348,8 @@ const myProfileSub = async (data) => {
   }
 };
 
-// const myProfile = async (data) => {
-//   console.log(getWithExpiry("token"));
-//   if (getWithExpiry("token")) {
-//     return new Promise((resolve, reject) => {
-//       fetch("http://localhost:8000/api/v1/users/profiles/my/", {
-//         method: "PATCH",
-//         headers: {
-//           Host: "localhost:8000",
-//           Authorization: "Bearer " + getWithExpiry("token"),
-//           Accept: "application/json",
-//           "Content-Type": "application/json",
-//           "X-CSRFToken":
-//             "Gzadcved0Ggks9TOH0ckzm3iUTXyO951KwZihb3oPDoYxbrRX5Ia38PqHxuelQQz",
-//         },
-//         body: JSON.stringify({
-//           first_name: data.name,
-//           last_name: data.surname,
-//           middle_name: data.lastname,
-//           gender: data.gender,
-//           registration_address: data?.registrate_place,
-//           living_address: data?.living_place,
-//           profile_photo: null,
-//           birth_date: data.date,
 
-//         }),
-//       }).then((response) => {
-//         resolve(response.json());
-//         // console.log(response.json())
-//         // console.log("Bearer " +getWithExpiry("token"))
-//       });
-//     });
-//   } else {
-//     console.log("sadasd");
-//   }
-// };
-
-const myProfileGet = async () => {
+const myProfileGet = () => {
   profileStatus = true;
   console.log(getWithExpiry("token"));
   if (getWithExpiry("token")) {
@@ -409,9 +375,14 @@ const myProfileGet = async () => {
   }
 };
 
-const institutionsGet = async () => {
+const institutionsGet = async (params) => {
+  // console.log(encodeURI(reqDebug.concat("/api/v1/institutions/", params)));
+  // let enc = new string_transcoder("utf-8");
+
+  const uri = encodeURI(reqDebug.concat("/api/v1/institutions/", params));
+  console.log(uri, decodeURI(uri));
   return new Promise((resolve, reject) => {
-    fetch(reqDebug.concat("/api/v1/institutions/"), {
+    fetch(decodeURI(uri), {
       method: "GET",
       headers: {
         Host: reqDebug,
@@ -527,12 +498,19 @@ const doTask = async (info) => {
         });
     }
   }
+  console.log(profileStatus)
   if (profileStatus) {
-    console.log(profileStatus)
+    console.log(profileStatus);
 
     if (data?.detail !== "Объекта не существует") {
       docFull = true;
       // console.log(docFull, 123)
+    }
+  }
+
+  if (document.querySelector('.post-filters_main')) {
+    if (data[0]?.alias) {
+      eis = data
     }
   }
 
@@ -555,23 +533,22 @@ const doTask = async (info) => {
     }
   }
   if (document.querySelector(".news-main")) {
-    console.log(data)
+    console.log(data);
     if (data[0]?.title) {
       // console.log(data)
       news = data;
-      console.log(news)
+      console.log(news);
       //  .news_wrapper_item.f.f-col.m-b10
-    //   //  .news_wrapper_item-title Защита проектов учащихся четвертой смены Национального детского технопарка завершилась
-    //   //  .news_wrapper_item-text 25 мая завершилась работа четвёртой смены Национального детского технопарка...
-    const newsWrapper = document.querySelector(".news_wrapper_items")
-      news.forEach(e => {
-        newsWrapper.innerHTML += 
-        "<div class='news_wrapper_item f f-col m-b10'>"+
-        `<div class='news_wrapper_item-title'> ${e.title}</div>`+
-        `<div class='news_wrapper_item-text'> ${e.body}</div>`+
-        "</div>"
-       
-      })
+      //   //  .news_wrapper_item-title Защита проектов учащихся четвертой смены Национального детского технопарка завершилась
+      //   //  .news_wrapper_item-text 25 мая завершилась работа четвёртой смены Национального детского технопарка...
+      const newsWrapper = document.querySelector(".news_wrapper_items");
+      news.forEach((e) => {
+        newsWrapper.innerHTML +=
+          "<div class='news_wrapper_item f f-col m-b10'>" +
+          `<div class='news_wrapper_item-title'> ${e.title}</div>` +
+          `<div class='news_wrapper_item-text'> ${e.body}</div>` +
+          "</div>";
+      });
     }
 
     // data.forEach((e,i)=> {
@@ -583,8 +560,61 @@ const doTask = async (info) => {
   // if(!getWithExpiry("token"))
 };
 
+const frontAddress = 'http://localhost:3000'
+// const frontAddress = 'enrollee.by'
+
 // doTask(newsGet())
-doTask(institutionsGet());
+// console.log(frontAddress.concat('/send_documents.html'))
+// console.log(window.location.href)
+if (frontAddress.concat('/index.html') == window.location.href) {
+  console.log(document.querySelectorAll('.header-info_item'))
+  let items = document.querySelectorAll('.header-info_item')
+  items.forEach(e => {e.classList.remove('__main-link')})
+  items[0].classList.add('__main-link')
+};
+
+if (frontAddress.concat('/statistics.html') == window.location.href) {
+  console.log(document.querySelectorAll('.header-info_item'))
+  let items = document.querySelectorAll('.header-info_item')
+  items.forEach(e => {e.classList.remove('__main-link')})
+  items[1].classList.add('__main-link')
+};
+
+if (frontAddress.concat('/documents.html') == window.location.href) {
+  console.log(document.querySelectorAll('.header-info_item'))
+  let items = document.querySelectorAll('.header-info_item')
+  items.forEach(e => {e.classList.remove('__main-link')})
+  items[2].classList.add('__main-link')
+};
+
+if (frontAddress.concat('/favourite.html') == window.location.href) {
+  console.log(document.querySelectorAll('.header-info_item'))
+  let items = document.querySelectorAll('.header-info_item')
+  items.forEach(e => {e.classList.remove('__main-link')})
+  items[3].classList.add('__main-link')
+};
+
+if (frontAddress.concat('/contacts.html') == window.location.href) {
+  console.log(document.querySelectorAll('.header-info_item'))
+  let items = document.querySelectorAll('.header-info_item')
+  items.forEach(e => {e.classList.remove('__main-link')})
+  items[4].classList.add('__main-link')
+};
+
+if (frontAddress.concat('/send_documents.html') == window.location.href) {
+  console.log(document.querySelectorAll('.header-info_item'))
+  let items = document.querySelectorAll('.header-info_item')
+  items.forEach(e => {e.classList.remove('__main-link')})
+  items[5].classList.add('__main-link')
+};
+
+if (frontAddress.concat('/auth.html') == window.location.href) {
+  console.log(document.querySelectorAll('.header-info_item'))
+  let items = document.querySelectorAll('.header-info_item')
+  items.forEach(e => {e.classList.remove('__main-link')})
+  items[6].classList.add('__main-link')
+};
+// doTask(institutionsGet(""));
 if (authContainer) {
   if (getWithExpiry("token")) {
     clearParent(authContainer);
@@ -693,8 +723,7 @@ if (authContainer) {
 
           doTask(logIn(data));
           // TEST
-          if (entryStatus)
-            document.location.href = "/auth-profile.html";
+          if (entryStatus) document.location.href = "/auth-profile.html";
           // doTask(myProfile())
           // console.log(localStorage.getItem('email'))
           // window.location.reload(true)
@@ -721,12 +750,91 @@ if (!authContainer && !authProfile) {
     !document.querySelector(".contact-title")
   ) {
     if (getWithExpiry("token")) {
+   
       console.log(docFull);
 
       setTimeout(() => {
         console.log(docFull, 564);
         if (docFull) {
           console.log("YEP");
+          if (document.querySelector(".post-filters_main")) {
+            let form = {};
+            let params = "";
+            form.ed_type = "Платной";
+            form.ei_type = "вуз";
+
+            document.querySelectorAll(".ei-item").forEach((e) => {
+              e.addEventListener("click", (event) => {
+                console.log(1);
+                filter(".ei-item", event.target, "active");
+                if (e.innerText == "ВУЗ") {
+                  form.ei_type = "вуз";
+                } else {
+                  form.ei_type = "суз";
+                }
+
+                if (form.region) {
+                  params = "";
+                  params = params.concat(
+                    "?region=",
+                    form.region,
+                    "&type=",
+                    form.ei_type
+                  );
+                  doTask(institutionsGet(params));
+                  setEis()
+                }
+                console.log(form);
+              });
+            });
+
+            // let region = document.getElementById('#region')
+            document
+              .getElementById("region")
+              .addEventListener("change", (e) => {
+                // console.log(e.target.value)
+                if (e.target.value != "") {
+                  form.region = e.target.value;
+                  params = "";
+                  params = params.concat(
+                    "?region=",
+                    form.region,
+                    "&type=",
+                    form.ei_type
+                  );
+                  doTask(institutionsGet(params));
+                  setEis()
+
+                } else delete form.region;
+                console.log(form);
+                console.log(params);
+              });
+
+            document.querySelectorAll(".ed-type").forEach((e) => {
+              e.addEventListener("click", (event) => {
+                console.log(1);
+                filter(".ed-type", event.target, "active");
+                if (e.innerText == "Платной") {
+                  form.ed_type = "Платной";
+                } else {
+                  form.ed_type = "Бюджетной";
+                }
+                console.log(form);
+              });
+            });
+            function setEis () {
+              let ei = document.getElementById('name')
+              setTimeout(()=>{console.log(eis)
+                ei.innerHTML = ''
+                eis.forEach((e,i) => {
+                  ei.innerHTML+= 
+                  `<option value=${e.name}>${e.alias}</option>`
+                })},3000)
+            }
+            
+            
+            // ei.innerHTML+=
+          }
         } else {
           console.log("Accepted");
 
@@ -739,7 +847,7 @@ if (!authContainer && !authProfile) {
             "</a>" +
             "</div>";
         }
-      }, 1000);
+      }, 2000);
     } else {
       console.log(1222);
       clearParent(blockContainer);
@@ -752,18 +860,17 @@ if (!authContainer && !authProfile) {
         "</div>";
     }
   } else {
-    
     if (document.querySelector(".news-main")) {
-       doTask(newsGet());
-    //   
-    //   setTimeout(() => {
-    //     console.log(news, 334);
-    //     news.forEach(e=> {
+      doTask(newsGet());
+      //
+      //   setTimeout(() => {
+      //     console.log(news, 334);
+      //     news.forEach(e=> {
 
-    //     })
-    //   }, 1000);
+      //     })
+      //   }, 1000);
 
-    //   console.log(news)
+      //   console.log(news)
     }
   }
 } else {
