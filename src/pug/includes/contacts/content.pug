@@ -1,19 +1,19 @@
 .block-container 
     .contact-title Контакты учреждений образования
     .contact-search.f 
-        .auth-input_bullet.f 
+        .auth-input_bullet.f.fm-col
             .auth-input_bullet-container.f
                 .auth-input_bullet-item.ei-item.active ВУЗ
                 .auth-input_bullet-item.ei-item СУЗ
-            .post-filters_place 
-            select.post-filters_place-item#region
-                option(value="", selected) Область
-                option(value="Минск") Минск
-                option(value="Минская") Минская
-            select.post-filters_place-item#name
-                option(value="", selected) Наименования УО
-                option(value="Минск") БГУИР
-                option(value="Минская") БНТУ
+            .post-filters_place.m-t10
+                select.post-filters_place-item#region
+                    option(value="", selected) Область
+                    option(value="Минск") Минск
+                    option(value="Минская") Минская
+                select.post-filters_place-item#name
+                    option(value="", selected) Наименования УО
+                    option(value="Минск") БГУИР
+                    option(value="Минская") БНТУ
        
             //- .auth-input.f.f-col
             //-     label(for="email") Email

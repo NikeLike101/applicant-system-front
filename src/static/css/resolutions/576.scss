@@ -8,3 +8,49 @@
         flex-wrap: wrap;
     }
 }
+
+.fm {
+    display: flex;
+}
+
+.fm-col {
+    flex-direction: column;
+}
+
+.block {
+    &-container {
+        padding-top: 80px;
+        z-index: 1;
+        min-height: 80vh;
+    }
+}
+
+
+
+.header {
+    display: flex;
+    position: fixed;
+    right: calc(100% - 80px);
+    z-index: 3;
+    
+    &.active {
+        right: 0;
+    }
+
+    &-menu {
+
+        &-icon {
+            background: $mainTheme;
+            height: fit-content;
+            z-index: 100;
+            padding: 0 10px;
+        }
+    }
+
+    &-icon {
+        width: 60px;
+        height: 70px;
+
+    }
+}
+

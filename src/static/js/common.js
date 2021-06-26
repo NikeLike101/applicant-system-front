@@ -6,12 +6,12 @@ const dayTime = 86400000;
 const second = 600000;
 let news = [];
 let eis = []
+let profile = {}
 let entryStatus = false;
 let profileStatus = false;
 let docFull = false;
-// let reqDebug = "http://localhost:8000";
-
-let reqDebug = 'http://enrollee.by'
+let reqDebug = "http://localhost:8000";
+// let reqDebug = 'http://enrollee.by'
 
 const alertWindow = document.createElement("div");
 alertWindow.classList.add("alert");
@@ -142,14 +142,14 @@ const myProfileName = async (data) => {
             "Gzadcved0Ggks9TOH0ckzm3iUTXyO951KwZihb3oPDoYxbrRX5Ia38PqHxuelQQz",
         },
         body: JSON.stringify({
-          first_name: data.name,
-          last_name: data.surname,
-          middle_name: data.lastname,
-          gender: data.gender,
+          first_name: data?.name,
+          last_name: data?.surname,
+          middle_name: data?.lastname,
+          gender: data?.gender,
           registration_address: data?.registrate_place,
           living_address: data?.living_place,
           profile_photo: null,
-          birth_date: data.date,
+          birth_date: data?.date,
         }),
       });
     });
@@ -184,6 +184,7 @@ const myProfilePrivil = async (data) => {
 };
 
 const myProfilePersonal = async (data) => {
+  console.log(data)
   if (getWithExpiry("token")) {
     return new Promise((resolve, reject) => {
       fetch(reqDebug.concat("/api/v1/users/profiles/my/"), {
@@ -479,6 +480,8 @@ const getResult = async (func) => {
 const doTask = async (info) => {
   let data = await getResult(info);
   console.log(info);
+  console.log(data)
+  profile = data
   if (document.getElementById("login-button")) {
     if (data.status_code) {
       if (data?.status_code == 401) {
@@ -504,6 +507,7 @@ const doTask = async (info) => {
 
     if (data?.detail !== "Объекта не существует") {
       docFull = true;
+      
       // console.log(docFull, 123)
     }
   }
@@ -560,14 +564,14 @@ const doTask = async (info) => {
   // if(!getWithExpiry("token"))
 };
 
-// const frontAddress = 'http://localhost:3000'
-const frontAddress = 'http://enrollee.by'
+const frontAddress = 'http://localhost:3000'
+// const frontAddress = 'http://enrollee.by'
 
 // doTask(newsGet())
 console.log(frontAddress.concat('/send_documents.html'))
 console.log(window.location.href)
 
-if (frontAddress.concat('/index.html') == window.location.href) {
+if (frontAddress.concat('/index.html') == window.location.href || frontAddress == window.location.href) {
   console.log(document.querySelectorAll('.header-info_item'))
   let items = document.querySelectorAll('.header-info_item')
   items.forEach(e => {e.classList.remove('__main-link')})
@@ -615,6 +619,12 @@ if (frontAddress.concat('/auth.html') == window.location.href) {
   items.forEach(e => {e.classList.remove('__main-link')})
   items[6].classList.add('__main-link')
 };
+
+document.querySelector('.header-menu-icon').addEventListener('click', () => {
+
+  document.querySelector('.header').classList.toggle('active')
+})
+
 // doTask(institutionsGet(""));
 if (authContainer) {
   if (getWithExpiry("token")) {
@@ -648,7 +658,7 @@ if (authContainer) {
         // "<div class='auth_enter-forgot'>Забыли пароль?</div>"+
         "</div>" +
         "<div class='auth_enter-buttons f jc-sb'>" +
-        "<div class='auth_enter-confirm' id='signup-button'>Зарегестрироваться</div>" +
+        "<div class='auth_enter-confirm' id='signup-button'>Зарегистрироваться</div>" +
         "<div class='auth_enter-back'>Отмена</div>" +
         "</div>";
       document.getElementById("email").onchange = (event) => {
@@ -854,7 +864,7 @@ if (!authContainer && !authProfile) {
       clearParent(blockContainer);
       blockContainer.innerHTML =
         "<div class='block-auth f f-col ai'>" +
-        "<p>Для пользования ресурсами сайта необходимо зарегестрироваться или войти в аккаунт, для продолжения нажмите 'Согласен'</p>" +
+        "<p>Для пользования ресурсами сайта необходимо зарегистрироваться или войти в аккаунт, для продолжения нажмите 'Согласен'</p>" +
         "<a href='/auth.html' class='block-auth_container'>" +
         "<div class='block-auth_confirm'>Согласен</div>" +
         "</a>" +
@@ -879,8 +889,28 @@ if (!authContainer && !authProfile) {
 }
 
 if (authProfile) {
+  
+  doTask(myProfileGet())
+  // console.log(pros)
+  
+  setTimeout(()=> {
+    console.log(profile)
+    
+    document.getElementById("surname").value = profile?.last_name
+    document.getElementById("name").value = profile?.first_name
+    document.getElementById("lastname").value = profile?.middle_name
+    document.getElementById("date").value = profile?.birth_date.split('.').reverse().join('-')
+    document.getElementById("registrate_place").value = profile?.registration_address
+    document.getElementById("living_place").value = profile?.living_address
+    document.getElementById("tel").value = profile?.phone
+    
+
+    console.log(document.getElementById("date").value)
+  },2000)
+ 
   console.log(1111);
   const form = {};
+
   document.getElementById("surname").onchange = (event) => {
     form[event.target.name] = event.target.value;
     console.log(form);
@@ -935,13 +965,16 @@ if (authProfile) {
   // }
 
   document.getElementById("first-next").addEventListener("click", () => {
+    document.querySelectorAll('input').forEach (e => {
+      if (e.name == 'date') { form[e.name] = e.value.split('-').reverse().join('.');  }else form[e.name] = e.value
+      
+    })
     console.log(profileStatus);
     if (profileStatus) {
       doTask(myProfileName(form));
     } else {
       doTask(myProfileInit(form));
     }
-
     console.log(form);
     clearParent(authProfile);
     authProfile.innerHTML =
@@ -963,36 +996,49 @@ if (authProfile) {
       "<label class='f' for='doc_serial'>Серия документа" +
       "<div class='__red'>*</div>" +
       "</label>" +
-      "<input type='text' id='doc_serial' maxlength='5' name='doc_serial'>" +
+      "<input type='text' value='' id='doc_serial' maxlength='5' name='doc_serial'>" +
       "</div>" +
       "<div class='auth-input f f-col'>" +
       "<label class='f' for='doc_number'>Номер документа" +
       "<div class='__red'>*</div>" +
       "</label>" +
-      "<input type='text' id='doc_number' name='doc_number'>" +
+      "<input type='text' id='doc_number' value='' name='doc_number'>" +
       "</div>" +
       "<div class='auth-input f f-col'>" +
       "<label class='f' for='doc_date'>Дата выдачи" +
       "<div class='__red'>*</div>" +
       "</label>" +
-      "<input type='date' id='doc_date' name='doc_date'>" +
+      "<input type='date' id='doc_date' value='' name='doc_date'>" +
       "</div>" +
       "</div>" +
       "<div class='auth-input f f-col'>" +
       "<label class='f' for='doc_place'>Наименование государственного органа, выдавшего документ" +
       "<div class='__red'>*</div>" +
       "</label>" +
-      "<input type='text' id='doc_place' name='doc_place'>" +
+      "<input type='text' id='doc_place' value='' name='doc_place'>" +
       "</div>" +
       "<div class='auth-input f f-col'>" +
       "<label for='doc_id'>Индификационный номер (при наличии)</label>" +
-      "<input type='text' id='doc_id' name='doc_id'>" +
+      "<input type='text' id='doc_id' value='' name='doc_id'>" +
       "</div>" +
       "<a class='auth-link f' href='#' class='f'>С порядком приема и подачи апелляции в учреждении образования ознакомлен(а)" +
       "<div class='__red'>*</div>" +
       "</a>" +
       "<div id='second-next' class='auth-next f'>Перейти далее<div class='auth-container_img'><img src='/img/svg/arrow-next.svg' alt=''></div></div>" +
       "</div>";
+
+      document.getElementById("doc_serial").value = profile?.personal_document?.series
+      document.getElementById("doc_number").value = profile?.personal_document?.number
+      document.getElementById("doc_date").value = profile?.personal_document?.emission_date.split('.').reverse().join('-')
+      document.getElementById("doc_place").value = profile?.personal_document?.agency_name
+      document.getElementById("doc_id").value = profile?.personal_document?.identification_number
+      
+
+     
+
+    
+
+
     document.getElementById("doc_serial").onchange = (event) => {
       form[event.target.name] = event.target.value;
       console.log(form);
@@ -1042,6 +1088,10 @@ if (authProfile) {
     // select.onselect(console.log(1))
 
     document.getElementById("second-next").addEventListener("click", () => {
+      document.querySelectorAll('input').forEach (e => {
+        if (e.name == 'doc_date') form[e.name] = e.value.split('-').reverse().join('.'); else form[e.name] = e.value
+        console.log(e.name , e.value)
+      })
       doTask(myProfilePersonal(form));
       clearParent(authProfile);
       authProfile.innerHTML =
@@ -1058,20 +1108,20 @@ if (authProfile) {
         "<div class='auth-ed-container'>" +
         "<div class='auth-ed-item f'>" +
         "<div class='auth-input f f-col'>" +
-        "<label for='ed_name'>Закончил(a) УО" +
+        "<label for='ed_name' class='f'>Закончил(a) УО" +
         "<div class='__red'>*</div>" +
         "</label>" +
         "<input type='text' name='ed_name0' id='ed_name0'>" +
         "</div>" +
         "<div class='auth-input f f-col'>" +
-        "<label for='ed_date'>В году " +
+        "<label for='ed_date' class='f'>В году " +
         "<div class='__red'>*</div>" +
         "</label>" +
         "<input type='text' name='ed_date0' id='ed_date0'>" +
         "</div>" +
         "</div>" +
         "</div>" +
-        "<div class='auth-ed-add'>Добавить ещё УО</div>" +
+        "<div class='auth-ed-add m-b10'>Добавить ещё УО</div>" +
         "<div>" +
         "<div>Трудовой стаж по профилю специальности</div>" +
         "<div class='auth-exp f'>" +
@@ -1119,13 +1169,13 @@ if (authProfile) {
           let item =
             "<div class='auth-ed-item f'>" +
             "<div class='auth-input f f-col'>" +
-            "<label for='ed_name'>Закончил(a) УО" +
+            "<label class='f' for='ed_name'>Закончил(a) УО" +
             "<div class='__red'>*</div>" +
             "</label>" +
             "<input type='text' name='ed_name' id='ed_name'>" +
             "</div>" +
             "<div class='auth-input f f-col'>" +
-            "<label for=''ed_date>В году " +
+            "<label class='f' for='ed_date'>В году " +
             "<div class='__red'>*</div>" +
             "</label>" +
             "<input type='text' name='ed_date' id='ed_date'>" +
@@ -1219,6 +1269,14 @@ if (authProfile) {
           "</div>" +
           "<div id='fourth-next' class='auth-next f'>Перейти далее<div class='auth-container_img'><img src='/img/svg/arrow-next.svg' alt=''></div></div>";
 
+
+          
+      document.getElementById("dad_name").value = profile?.father?.first_name
+      document.getElementById("dad_surname").value = profile?.father?.last_name
+      document.getElementById("dad_name").value = profile?.father?.middle_name
+      document.getElementById("dad_address").value = profile?.father?.living_address
+      document.getElementById("dad_tel").value = profile?.father?.phone_number
+
         document.getElementById("dad_name").onchange = (event) => {
           form[event.target.name] = event.target.value;
           console.log(form);
@@ -1281,6 +1339,13 @@ if (authProfile) {
             "<input type='text' id='mom_tel' name='mom_tel'>" +
             "</div>" +
             "<div id='fifth-next' class='auth-next f'>Перейти далее<div class='auth-container_img'><img src='/img/svg/arrow-next.svg' alt=''></div></div>";
+
+
+            document.getElementById("mom_name").value = profile?.mother?.first_name
+            document.getElementById("mom_surname").value = profile?.mother?.last_name
+            document.getElementById("mom_name").value = profile?.mother?.middle_name
+            document.getElementById("mom_address").value = profile?.mother?.living_address
+            document.getElementById("mom_tel").value = profile?.mother?.phone_number
 
           document.getElementById("mom_name").onchange = (event) => {
             form[event.target.name] = event.target.value;
@@ -1350,6 +1415,13 @@ if (authProfile) {
                 "<input type='text' id='privil_place' name='privil_place'>" +
                 "</div>" +
                 "<div id='sixth-next' class='auth-next f'>Перейти далее<div class='auth-container_img'><img src='/img/svg/arrow-next.svg' alt=''></div></div>";
+
+                document.getElementById("privil").value = profile?.privilege_document?.name
+                document.getElementById("privil_series").value = profile?.privilege_document?.series
+                document.getElementById("privil_number").value = profile?.privilege_document?.number
+                document.getElementById("privil_date").value = profile?.privilege_document?.emission_date.split('.').reverse().join('-')
+                document.getElementById("privil_place").value = profile?.privilege_document?.agency_name
+
 
               document.getElementById("privil").onchange = (event) => {
                 form[event.target.name] = event.target.value;
@@ -1457,6 +1529,21 @@ if (authProfile) {
                     "</div>" +
                     "<div class='auth-input ai f'><label for='ct'>Балл в аттестате</label><input type='text' id='ct'></div>" +
                     "<div id='last-next' class='auth-next f'>Подать документы<div class='auth-container_img'><img src='/img/svg/arrow-next.svg' alt=''></div></div>";
+
+
+                    document.getElementById("privil").value = profile?.privilege_document?.name
+
+                    // document
+                    // .querySelectorAll(".auth-input_sub-item")
+                    // .forEach((elem, i) =>
+                    //   elem.addEventListener("change", (e) => {
+                    //     i += 1;
+                    //     e.target.value = ;
+                    //     i -= 1;
+                    //     console.log(form);
+                    //     // form[sub].name = e.target.value console.log(form)
+                    //   })
+                    // );
 
                   document
                     .querySelectorAll(".auth-input_sub-item")

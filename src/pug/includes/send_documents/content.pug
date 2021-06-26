@@ -1,11 +1,11 @@
 .block-container
-    .post-filters_main.f
+    .post-filters_main.f.fm-col
         .auth-input_bullet.f 
                 .auth-input_bullet-container.f
                     .auth-input_bullet-item.ei-item.active ВУЗ
                     .auth-input_bullet-item.ei-item СУЗ
-        .post-filters_place 
-            select.post-filters_place-item#region
+        .post-filters_place.fm.fm-col.m-t10
+            select.post-filters_place-item.m-b10#region
                 option(value="", selected) Область
                 option(value="Минск") Минск
                 option(value="Минская область") Минская
@@ -17,7 +17,7 @@
             select.post-filters_place-item#name
                 option(value="", selected) Наименования УО
                 
-    .post-filters_spec.f.m-t10
+    .post-filters_spec.f.fm-col.m-b10.m-t10
         .auth-input.f.ai
             label(for="spec" class='m-r10') Специальность
             input(type="text" name='spec' id='spec')
