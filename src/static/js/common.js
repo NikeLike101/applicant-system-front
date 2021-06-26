@@ -10,8 +10,8 @@ let profile = {}
 let entryStatus = false;
 let profileStatus = false;
 let docFull = false;
-let reqDebug = "http://localhost:8000";
-// let reqDebug = 'http://enrollee.by'
+// let reqDebug = "http://localhost:8000";
+let reqDebug = 'http://enrollee.by'
 
 const alertWindow = document.createElement("div");
 alertWindow.classList.add("alert");
@@ -564,8 +564,8 @@ const doTask = async (info) => {
   // if(!getWithExpiry("token"))
 };
 
-const frontAddress = 'http://localhost:3000'
-// const frontAddress = 'http://enrollee.by'
+// const frontAddress = 'http://localhost:3000'
+const frontAddress = 'http://enrollee.by'
 
 // doTask(newsGet())
 console.log(frontAddress.concat('/send_documents.html'))
