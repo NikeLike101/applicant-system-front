@@ -92,6 +92,13 @@ body {
 }
 
 .header {
+  &-menu{
+
+    &-icon {
+      display: none;
+    }
+  }
+
   &-info {
     &_item {
       color: #fff;
