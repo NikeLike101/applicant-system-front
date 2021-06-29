@@ -7,11 +7,12 @@ const second = 600000;
 let news = [];
 let eis = []
 let profile = {}
+let contact_phone = ''
 let entryStatus = false;
 let profileStatus = false;
 let docFull = false;
-// let reqDebug = "http://localhost:8000";
-let reqDebug = 'http://enrollee.by'
+let reqDebug = "http://localhost:8000";
+// let reqDebug = 'http://enrollee.by'
 
 const alertWindow = document.createElement("div");
 alertWindow.classList.add("alert");
@@ -351,7 +352,6 @@ const myProfileSub = async (data) => {
 
 
 const myProfileGet = () => {
-  profileStatus = true;
   console.log(getWithExpiry("token"));
   if (getWithExpiry("token")) {
     return new Promise((resolve, reject) => {
@@ -381,6 +381,32 @@ const institutionsGet = async (params) => {
   // let enc = new string_transcoder("utf-8");
 
   const uri = encodeURI(reqDebug.concat("/api/v1/institutions/", params));
+  console.log(uri, decodeURI(uri));
+  return new Promise((resolve, reject) => {
+    fetch(decodeURI(uri), {
+      method: "GET",
+      headers: {
+        Host: reqDebug,
+        // Authorization: "Bearer " + getWithExpiry("token"),
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        "X-CSRFToken":
+          "Gzadcved0Ggks9TOH0ckzm3iUTXyO951KwZihb3oPDoYxbrRX5Ia38PqHxuelQQz",
+      },
+    }).then((response) => {
+      resolve(response.json());
+      // console.log(response.json())
+      // console.log("Bearer " +getWithExpiry("token"))
+    });
+  });
+};
+
+
+const institutionID = async (id) => {
+  // console.log(encodeURI(reqDebug.concat("/api/v1/institutions/", params)));
+  // let enc = new string_transcoder("utf-8");
+
+  const uri = encodeURI(reqDebug.concat("/api/v1/institutions/", id));
   console.log(uri, decodeURI(uri));
   return new Promise((resolve, reject) => {
     fetch(decodeURI(uri), {
@@ -501,14 +527,20 @@ const doTask = async (info) => {
         });
     }
   }
+  if(data?.contact_phone) contact_phone = data?.contact_phone
   console.log(profileStatus)
-  if (profileStatus) {
-    console.log(profileStatus);
-
     if (data?.detail !== "Объекта не существует") {
-      docFull = true;
       
+      profileStatus = true
+      docFull = true;
       // console.log(docFull, 123)
+    } else {
+      profileStatus = false
+    }
+  
+  if (document.querySelector('.contact-search')) {
+    if (data[0]?.alias) {
+      eis = data
     }
   }
 
@@ -564,8 +596,8 @@ const doTask = async (info) => {
   // if(!getWithExpiry("token"))
 };
 
-// const frontAddress = 'http://localhost:3000'
-const frontAddress = 'http://enrollee.by'
+const frontAddress = 'http://localhost:3000'
+// const frontAddress = 'http://enrollee.by'
 
 // doTask(newsGet())
 console.log(frontAddress.concat('/send_documents.html'))
@@ -710,7 +742,7 @@ if (authContainer) {
         "<div class='auth-input f f-col'>" +
         "<label for='pass'>Пароль</label>" +
         "<input type='password' id='pass' name='pass'>" +
-        "<div class='auth_enter-forgot'>Забыли пароль?</div>" +
+        "<div class='auth_enter-forgot m-t10'>Забыли пароль?</div>" +
         "</div>" +
         "<div class='auth_enter-buttons f jc-sb'>" +
         "<div class='auth_enter-confirm' id='login-button'>Войти</div>" +
@@ -882,6 +914,123 @@ if (!authContainer && !authProfile) {
       //   }, 1000);
 
       //   console.log(news)
+    }
+
+    if (document.querySelector('.contact-title')) {
+      if (document.querySelector(".contact-search")) {
+        let form = {};
+        let nameSelect = document.getElementById('name')
+        let n
+        let optValue = ''
+        let params = "";
+        form.ei_type = "вуз";
+
+        document.querySelectorAll(".ei-item").forEach((e) => {
+          e.addEventListener("click", (event) => {
+            console.log(1);
+            filter(".ei-item", event.target, "active");
+            if (e.innerText == "ВУЗ") {
+              form.ei_type = "вуз";
+            } else {
+              form.ei_type = "суз";
+            }
+            document.querySelector('.contact-info_phone').innerHTML= ''
+          document.querySelector('.contact-info_alias').innerHTML= ''
+          document.querySelector('.contact-info_name').innerHTML= ''
+
+            if (form.region) {
+              params = "";
+              params = params.concat(
+                "?region=",
+                form.region,
+                "&type=",
+                form.ei_type
+              );
+              doTask(institutionsGet(params));
+              setEis()
+            }
+            console.log(form);
+          });
+        });
+
+        // let region = document.getElementById('#region')
+        document
+          .getElementById("region")
+          .addEventListener("change", (e) => {
+            document.querySelector('.contact-info_phone').innerHTML= ''
+            document.querySelector('.contact-info_alias').innerHTML= ''
+            document.querySelector('.contact-info_name').innerHTML= ''
+            // console.log(e.target.value)
+            if (e.target.value != "") {
+              form.region = e.target.value;
+              params = "";
+              params = params.concat(
+                "?region=",
+                form.region,
+                "&type=",
+                form.ei_type
+              );
+              doTask(institutionsGet(params));
+              setEis()
+
+            } else delete form.region;
+            console.log(form);
+            console.log(params);
+          });
+
+       
+        function setEis () {
+          let ei = document.getElementById('name')
+          setTimeout(()=>{console.log(eis)
+            ei.innerHTML = '<option value="", selected> Наименование УО</option>'
+            eis.forEach((e) => {
+              optValue = ''
+              optValue = optValue.concat(e.name, '|', e.id)
+              
+              ei.innerHTML+= 
+              `<option value="${optValue}">${e.alias}</option>`
+              
+            }
+            )
+            console.log(nameSelect.querySelectorAll('option'))
+            // nameSelect.querySelectorAll('option').forEach(e => {
+            //   // console.log(e)
+            //   e.addEventListener('select', ()=>{console.log(e)})
+            // })
+          },2000)
+            
+        }
+        // console.log(
+        //   document.getElementById('name'))
+        
+        nameSelect.addEventListener('change', (e)=> {
+          n = nameSelect.options.selectedIndex;
+          // console.log(nameSelect.options[n].text)
+          console.log(optValue)
+          let optValueSep = e.target.value.split('|')
+          console.log(optValueSep)
+          form.ed_alias = nameSelect.options[n].text
+          form.ed_name = optValueSep[0]
+          form.ed_id = optValueSep[1]
+          console.log(form)
+          console.log(e.target.text)
+          document.querySelector('.contact-info_phone').innerHTML= ''
+          document.querySelector('.contact-info_alias').innerHTML= ''
+          document.querySelector('.contact-info_name').innerHTML= ''
+          doTask(institutionID(form?.ed_id))
+          setTimeout(() => {
+            
+            document.querySelector('.contact-info_alias').innerHTML= form?.ed_alias
+            document.querySelector('.contact-info_name').innerHTML= form?.ed_name
+            form.ed_phone = contact_phone
+            document.querySelector('.contact-info_phone').innerHTML= form?.ed_phone
+          },2000)
+          
+        })
+        
+        
+        // ei.innerHTML+=
+      }
     }
   }
 } else {
@@ -1273,7 +1422,7 @@ if (authProfile) {
           
       document.getElementById("dad_name").value = profile?.father?.first_name
       document.getElementById("dad_surname").value = profile?.father?.last_name
-      document.getElementById("dad_name").value = profile?.father?.middle_name
+      document.getElementById("dad_lastname").value = profile?.father?.middle_name
       document.getElementById("dad_address").value = profile?.father?.living_address
       document.getElementById("dad_tel").value = profile?.father?.phone_number
 
@@ -1343,7 +1492,7 @@ if (authProfile) {
 
             document.getElementById("mom_name").value = profile?.mother?.first_name
             document.getElementById("mom_surname").value = profile?.mother?.last_name
-            document.getElementById("mom_name").value = profile?.mother?.middle_name
+            document.getElementById("mom_lastname").value = profile?.mother?.middle_name
             document.getElementById("mom_address").value = profile?.mother?.living_address
             document.getElementById("mom_tel").value = profile?.mother?.phone_number
 
@@ -1531,7 +1680,7 @@ if (authProfile) {
                     "<div id='last-next' class='auth-next f'>Подать документы<div class='auth-container_img'><img src='/img/svg/arrow-next.svg' alt=''></div></div>";
 
 
-                    document.getElementById("privil").value = profile?.privilege_document?.name
+                    // document.getElementById("privil").value = profile?.privilege_document?.name
 
                     // document
                     // .querySelectorAll(".auth-input_sub-item")
@@ -1597,9 +1746,9 @@ if (authProfile) {
                       // doTask(myProfile(form));
                       // TEST
 
-                      // if (true)
-                      // document.location.href =
-                      //   "/index.html";
+                      
+                      document.location.href =
+                        "/index.html";
                     });
                 });
             });

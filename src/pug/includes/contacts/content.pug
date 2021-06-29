@@ -1,5 +1,5 @@
 .block-container 
-    .contact-title Контакты учреждений образования
+    .contact-title.m-b10 Контакты учреждений образования
     .contact-search.f 
         .auth-input_bullet.f.fm-col
             .auth-input_bullet-container.f
@@ -9,12 +9,19 @@
                 select.post-filters_place-item#region
                     option(value="", selected) Область
                     option(value="Минск") Минск
-                    option(value="Минская") Минская
+                    option(value="Минская область") Минская
+                    option(value="Брестская область") Брестская
+                    option(value="Гродненская область") Гродненская
+                    option(value="Гомельская область") Гомельская
+                    option(value="Могилёвская область") Могилевская
+                    option(value="Витебская область") Витебская
                 select.post-filters_place-item#name
                     option(value="", selected) Наименования УО
-                    option(value="Минск") БГУИР
-                    option(value="Минская") БНТУ
-       
+                   
+    .contact-info
+        .contact-info_name
+        .contact-info_alias.m-b10.m-t10
+        .contact-info_phone
             //- .auth-input.f.f-col
             //-     label(for="email") Email
             //-     input(type="text", id="email", name="email")

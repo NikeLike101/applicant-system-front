@@ -61,6 +61,8 @@ body {
                 background: $mainTheme;
                 border-radius: 5px;
                 padding: 10px;
+                // width: 100%;
+                transition: .2s all ease-in-out;
             }
         }
     }
@@ -88,7 +90,7 @@ body {
   width: 100%;
   height: 100vh;
   padding: 0 10%;
-  background: url(https://s01.h.cdn4.life/media/7/7/77742152289761_838.webp);
+  background: url(https://images.wallpaperscraft.ru/image/zelenyy_polosy_vertikalnyy_temnyy_ten_16422_1920x1080.jpg);
 }
 
 .header {
@@ -239,6 +241,12 @@ body {
       color: #000;
     }
 
+    &-confirm {
+      background: $mainTheme;
+    padding: 11px 42px;
+    border-radius: 5px;
+    }
+
     &-forgot {
     }
 
@@ -246,6 +254,9 @@ body {
     }
 
     &-back {
+      background: #5f0;
+    padding: 11px 42px;
+    border-radius: 5px;
     }
 
     &-buttons {
