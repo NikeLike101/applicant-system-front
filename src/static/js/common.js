@@ -785,15 +785,14 @@ if (authContainer) {
 console.log(getWithExpiry("token"));
 if (!authContainer && !authProfile) {
   //TEST
-  // if(false){
-  console.log(1212212);
+  // if(false) {
   if (
     !document.querySelector(".news-main") &&
     !document.querySelector(".docs-list") &&
     !document.querySelector(".contact-title")
   ) {
     if (getWithExpiry("token")) {
-   
+  
       console.log(docFull);
 
       setTimeout(() => {
@@ -867,40 +866,42 @@ if (!authContainer && !authProfile) {
             });
             function setEis () {
               let ei = document.getElementById('name')
+             
               setTimeout(()=>{console.log(eis)
                 ei.innerHTML = ''
                 eis.forEach((e,i) => {
                   ei.innerHTML+= 
                   `<option value=${e.name}>${e.alias}</option>`
                 })},3000)
+                
             }
-            
+          
             
             // ei.innerHTML+=
           }
         } else {
           console.log("Accepted");
-
-          clearParent(blockContainer);
-          blockContainer.innerHTML =
-            "<div class='block-auth f f-col ai'>" +
-            "<p>Для пользования ресурсами сайта необходимо заполнить профиль, для продолжения нажмите 'Согласен'</p>" +
-            "<a href='/auth-profile.html' class='block-auth_container'>" +
-            "<div class='block-auth_confirm'>Согласен</div>" +
-            "</a>" +
-            "</div>";
+      
+          // clearParent(blockContainer);
+          // blockContainer.innerHTML =
+          //   "<div class='block-auth f f-col ai'>" +
+          //   "<p>Для пользования ресурсами сайта необходимо заполнить профиль, для продолжения нажмите 'Согласен'</p>" +
+          //   "<a href='/auth-profile.html' class='block-auth_container'>" +
+          //   "<div class='block-auth_confirm'>Согласен</div>" +
+          //   "</a>" +
+          //   "</div>";
         }
       }, 2000);
     } else {
       console.log(1222);
-      clearParent(blockContainer);
-      blockContainer.innerHTML =
-        "<div class='block-auth f f-col ai'>" +
-        "<p>Для пользования ресурсами сайта необходимо зарегистрироваться или войти в аккаунт, для продолжения нажмите 'Согласен'</p>" +
-        "<a href='/auth.html' class='block-auth_container'>" +
-        "<div class='block-auth_confirm'>Согласен</div>" +
-        "</a>" +
-        "</div>";
+      // clearParent(blockContainer);
+      // blockContainer.innerHTML =
+      //   "<div class='block-auth f f-col ai'>" +
+      //   "<p>Для пользования ресурсами сайта необходимо зарегистрироваться или войти в аккаунт, для продолжения нажмите 'Согласен'</p>" +
+      //   "<a href='/auth.html' class='block-auth_container'>" +
+      //   "<div class='block-auth_confirm'>Согласен</div>" +
+      //   "</a>" +
+      //   "</div>";
     }
   } else {
     if (document.querySelector(".news-main")) {

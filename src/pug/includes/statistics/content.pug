@@ -1,9 +1,23 @@
 .block-container
-
-            //- .auth-input.f.f-col
-            //-     label(for="email") Email
-            //-     input(type="text", id="email", name="email")
-            //- .auth-input.f.f-col
-            //-     label(for="pass") Пароль
-            //-     input(type="password", id="pass", name="pass")
-            
+    .stats
+        .stats-selects.f.f-col.m-t10.ai
+            .stats-selects_blocks.f
+                    .auth-input_bullet-container.f
+                        .auth-input_bullet-item.ei-item.active ВУЗ
+                        .auth-input_bullet-item.ei-item СУЗ
+                    .post-filters_place.m-t10
+                            select.post-filters_place-item#region
+                                option(value="", selected) Область
+                                option(value="Минск") Минск
+                                option(value="Минская область") Минская
+                                option(value="Брестская область") Брестская
+                                option(value="Гродненская область") Гродненская
+                                option(value="Гомельская область") Гомельская
+                                option(value="Могилёвская область") Могилевская
+                                option(value="Витебская область") Витебская
+                            select.post-filters_place-item#name
+                                option(value="", selected) Наименования УО
+                            select.post-filters_place-item#sub
+                                option(value="", selected) Специальность
+            .stats-selects_update Обновить
+        .stats-info 
