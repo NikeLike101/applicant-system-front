@@ -136,24 +136,27 @@ body {
     }
 
     &_item {
+        
         transition: .2s all ease-in-out;
 
         &:hover {
+            
             margin-left: 20px;
 
             .news_wrapper_item-text {
                 margin-left: 20px;
+                font-size: 18px;
             }
         }
 
         &-title {
-            font-size: 16px;
+            font-size: 20px;
         }
 
         &-text {
             transition: .2s all ease-in-out;
             margin-left: 10px;
-            font-size: 10px;
+            font-size: 16px;
         }
     }
   }
@@ -289,6 +292,10 @@ body {
     }
 
     &-forgot {
+      position: absolute;
+      width: 60px;
+      left: 55%;
+      cursor: pointer;
     }
 
     &-enter {
@@ -308,9 +315,14 @@ body {
 
   &-profile {
     padding: 40px;
+
+    &_ct {
+      width: 40%;
+    }
   }
 
   &-input {
+    position: relative;
     padding: 20px 0;
 
     &_name {
@@ -416,7 +428,9 @@ body {
     }
   }
 }
-
+#name:invalid {
+  color: red;
+}
 .docs {
   &-list {
 
