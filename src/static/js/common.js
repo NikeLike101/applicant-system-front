@@ -520,7 +520,10 @@ const doTask = async (info) => {
   console.log(info);
   console.log(data)
   profile = data
-  if (profile === undefined) profileInited = false; else profile.forEach(e => {if(e === undefined) e = ''})
+  if (document.querySelector('.auth-profile')) {
+    if (profile === undefined) profileInited = false; 
+  }
+  
   if (document.getElementById("login-button")) {
     if (data.status_code) {
       if (data?.status_code == 401) {
