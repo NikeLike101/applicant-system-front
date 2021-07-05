@@ -5,13 +5,15 @@ const authContainer = document.querySelector(".auth-container_enter");
 const dayTime = 86400000;
 const second = 600000;
 let news = [];
-let eis = []
-let profile = {}
-let profileInited = true
-let contact_phone = ''
+let eis = [];
+let profile = {};
+let prof = {};
+let profileInited = true;
+let contact_phone = "";
 let entryStatus = false;
 let profileStatus = false;
 let docFull = false;
+let specs = []
 // let reqDebug = "http://localhost:8000";
 let reqDebug = 'http://enrollee.by'
 
@@ -127,14 +129,15 @@ const myProfileInit = async (data) => {
             "Gzadcved0Ggks9TOH0ckzm3iUTXyO951KwZihb3oPDoYxbrRX5Ia38PqHxuelQQz",
         },
         body: JSON.stringify({
-          first_name: data.name,
-          last_name: data.surname,
-          middle_name: data.lastname,
-          gender: data.gender,
+          first_name: data?.name,
+          last_name: data?.surname,
+          middle_name: data?.lastname,
+          gender: data?.gender,
           registration_address: data?.registrate_place,
           living_address: data?.living_place,
           profile_photo: null,
-          birth_date: data.date,
+          birth_date: data?.date,
+          phone: data?.tel,
         }),
       });
     });
@@ -163,6 +166,7 @@ const myProfileName = async (data) => {
           living_address: data?.living_place,
           profile_photo: null,
           birth_date: data?.date,
+          phone: data?.tel,
         }),
       });
     });
@@ -197,7 +201,7 @@ const myProfilePrivil = async (data) => {
 };
 
 const myProfilePersonal = async (data) => {
-  console.log(data)
+  console.log(data);
   if (getWithExpiry("token")) {
     return new Promise((resolve, reject) => {
       fetch(reqDebug.concat("/api/v1/users/profiles/my/"), {
@@ -361,7 +365,38 @@ const myProfileSub = async (data) => {
     });
   }
 };
+//zxc
 
+
+const specPost = (id) => {
+  console.log(getWithExpiry("token"));
+  console.log(profile)
+  if (getWithExpiry("token")) {
+
+    return new Promise((resolve, reject) => {
+      fetch(reqDebug.concat("/api/v1/users/request_specialization/"), {
+        method: "POST",
+        headers: {
+          Host: reqDebug,
+          Authorization: "Bearer " + getWithExpiry("token"),
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          "X-CSRFToken":
+            "Gzadcved0Ggks9TOH0ckzm3iUTXyO951KwZihb3oPDoYxbrRX5Ia38PqHxuelQQz",
+        },
+        body: JSON.stringify({
+          profile: prof,
+          specialization: id,
+        }),
+      }).then((response) => {
+        resolve(response.json());
+        // console.log(response.json())
+        // console.log("Bearer " +getWithExpiry("token"))
+      });
+    });
+  } else {
+  }
+};
 
 const myProfileGet = () => {
   console.log(getWithExpiry("token"));
@@ -412,7 +447,6 @@ const institutionsGet = async (params) => {
     });
   });
 };
-
 
 const institutionID = async (id) => {
   // console.log(encodeURI(reqDebug.concat("/api/v1/institutions/", params)));
@@ -518,12 +552,31 @@ const getResult = async (func) => {
 const doTask = async (info) => {
   let data = await getResult(info);
   console.log(info);
-  console.log(data)
-  profile = data
-  if (document.querySelector('.auth-profile')) {
-    if (profile === undefined) profileInited = false; 
+  console.log(data);
+  profile = data;
+
+  if (document.querySelector('.post-filters_spec')) {
+    if (data?.alias && data?.contact_phone) {
+      specs = data?.specializations
+      console.log(specs)
+      document.getElementById('specs').innerHTML= ''
+      specs.forEach(e => {
+        let specInfo = ''
+        specInfo= specInfo.concat(e?.alias, '|', e?.id, '|', e?.institution, '|', e?.name)
+         //qwe
+         document.getElementById('specs').innerHTML+= `<option value='${specInfo}'>${e.alias}</option>`
+      })
+      
+    }
+    if(data?.birth_date) {
+      prof = data
+    }
   }
-  
+
+  if (document.querySelector(".auth-profile")) {
+    if (profile === undefined) profileInited = false;
+  }
+
   if (document.getElementById("login-button")) {
     if (data.status_code) {
       if (data?.status_code == 401) {
@@ -543,26 +596,25 @@ const doTask = async (info) => {
         });
     }
   }
-  if(data?.contact_phone) contact_phone = data?.contact_phone
-  console.log(profileStatus)
-    if (data?.detail !== "Объекта не существует") {
-      
-      profileStatus = true
-      docFull = true;
-      // console.log(docFull, 123)
-    } else {
-      profileStatus = false
-    }
-  
-  if (document.querySelector('.contact-search')) {
+  if (data?.contact_phone) contact_phone = data?.contact_phone;
+  console.log(profileStatus);
+  if (data?.detail !== "Объекта не существует") {
+    profileStatus = true;
+    docFull = true;
+    // console.log(docFull, 123)
+  } else {
+    profileStatus = false;
+  }
+
+  if (document.querySelector(".contact-search")) {
     if (data[0]?.alias) {
-      eis = data
+      eis = data;
     }
   }
 
-  if (document.querySelector('.post-filters_main')) {
+  if (document.querySelector(".post-filters_main")) {
     if (data[0]?.alias) {
-      eis = data
+      eis = data;
     }
   }
 
@@ -612,72 +664,90 @@ const doTask = async (info) => {
   // if(!getWithExpiry("token"))
 };
 
-// const frontAddress = 'http://localhost:3000'
+// const frontAddress = "http://localhost:3000";
 const frontAddress = 'http://enrollee.by'
 
 // doTask(newsGet())
-console.log(frontAddress.concat('/send_documents.html'))
-console.log(window.location.href)
+console.log(frontAddress.concat("/send_documents.html"));
+console.log(window.location.href);
 
-if (frontAddress.concat('/index.html') == window.location.href || frontAddress == window.location.href) {
-  console.log(document.querySelectorAll('.header-info_item'))
-  let items = document.querySelectorAll('.header-info_item')
-  items.forEach(e => {e.classList.remove('__main-link')})
-  items[0].classList.add('__main-link')
-};
-
-if (frontAddress.concat('/statistics.html') == window.location.href) {
-  console.log(document.querySelectorAll('.header-info_item'))
-  let items = document.querySelectorAll('.header-info_item')
-  items.forEach(e => {e.classList.remove('__main-link')})
-  items[1].classList.add('__main-link')
-};
-
-if (frontAddress.concat('/documents.html') == window.location.href) {
-  console.log(document.querySelectorAll('.header-info_item'))
-  let items = document.querySelectorAll('.header-info_item')
-  items.forEach(e => {e.classList.remove('__main-link')})
-  items[2].classList.add('__main-link')
-};
-
-if (frontAddress.concat('/favourite.html') == window.location.href) {
-  console.log(document.querySelectorAll('.header-info_item'))
-  let items = document.querySelectorAll('.header-info_item')
-  items.forEach(e => {e.classList.remove('__main-link')})
-  items[3].classList.add('__main-link')
-};
-
-if (frontAddress.concat('/contacts.html') == window.location.href) {
-  console.log(document.querySelectorAll('.header-info_item'))
-  let items = document.querySelectorAll('.header-info_item')
-  items.forEach(e => {e.classList.remove('__main-link')})
-  items[4].classList.add('__main-link')
-};
-
-if (frontAddress.concat('/send_documents.html') == window.location.href) {
-  console.log(document.querySelectorAll('.header-info_item'))
-  let items = document.querySelectorAll('.header-info_item')
-  items.forEach(e => {e.classList.remove('__main-link')})
-  items[5].classList.add('__main-link')
-};
-
-if (frontAddress.concat('/auth.html') == window.location.href) {
-  console.log(document.querySelectorAll('.header-info_item'))
-  let items = document.querySelectorAll('.header-info_item')
-  items.forEach(e => {e.classList.remove('__main-link')})
-  items[6].classList.add('__main-link')
-};
-
-if (getWithExpiry("token")) {
-  let items = document.querySelectorAll('.header-info_item')
-  items.forEach(e => {e.classList.remove('__main-link')})
-  items[6].innerHTML = "Выход/ адрес электронной почты"
+if (
+  frontAddress.concat("/index.html") == window.location.href ||
+  frontAddress == window.location.href
+) {
+  console.log(document.querySelectorAll(".header-info_item"));
+  let items = document.querySelectorAll(".header-info_item");
+  items.forEach((e) => {
+    e.classList.remove("__main-link");
+  });
+  items[0].classList.add("__main-link");
 }
 
-document.querySelector('.header-menu-icon').addEventListener('click', () => {
+if (frontAddress.concat("/statistics.html") == window.location.href) {
+  console.log(document.querySelectorAll(".header-info_item"));
+  let items = document.querySelectorAll(".header-info_item");
+  items.forEach((e) => {
+    e.classList.remove("__main-link");
+  });
+  items[1].classList.add("__main-link");
+}
 
-  document.querySelector('.header').classList.toggle('active')
-})
+if (frontAddress.concat("/documents.html") == window.location.href) {
+  console.log(document.querySelectorAll(".header-info_item"));
+  let items = document.querySelectorAll(".header-info_item");
+  items.forEach((e) => {
+    e.classList.remove("__main-link");
+  });
+  items[2].classList.add("__main-link");
+}
+
+if (frontAddress.concat("/favourite.html") == window.location.href) {
+  console.log(document.querySelectorAll(".header-info_item"));
+  let items = document.querySelectorAll(".header-info_item");
+  items.forEach((e) => {
+    e.classList.remove("__main-link");
+  });
+  items[3].classList.add("__main-link");
+}
+
+if (frontAddress.concat("/contacts.html") == window.location.href) {
+  console.log(document.querySelectorAll(".header-info_item"));
+  let items = document.querySelectorAll(".header-info_item");
+  items.forEach((e) => {
+    e.classList.remove("__main-link");
+  });
+  items[4].classList.add("__main-link");
+}
+
+if (frontAddress.concat("/send_documents.html") == window.location.href) {
+  console.log(document.querySelectorAll(".header-info_item"));
+  let items = document.querySelectorAll(".header-info_item");
+  items.forEach((e) => {
+    e.classList.remove("__main-link");
+  });
+  items[5].classList.add("__main-link");
+}
+
+if (frontAddress.concat("/auth.html") == window.location.href) {
+  console.log(document.querySelectorAll(".header-info_item"));
+  let items = document.querySelectorAll(".header-info_item");
+  items.forEach((e) => {
+    e.classList.remove("__main-link");
+  });
+  items[6].classList.add("__main-link");
+}
+
+if (getWithExpiry("token")) {
+  let items = document.querySelectorAll(".header-info_item");
+  items.forEach((e) => {
+    e.classList.remove("__main-link");
+  });
+  items[6].innerHTML = "Выход/ адрес электронной почты";
+}
+
+document.querySelector(".header-menu-icon").addEventListener("click", () => {
+  document.querySelector(".header").classList.toggle("active");
+});
 
 // doTask(institutionsGet(""));
 if (authContainer) {
@@ -764,9 +834,9 @@ if (authContainer) {
         "<div class='auth-input f f-col'>" +
         "<label for='pass'>Пароль</label>" +
         "<input type='password' id='pass' name='pass'>" +
-        '<div class="auth_enter-forgot m-t10">'+
-        '<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" fill="#fff" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512;" xml:space="preserve"><g><g><path d="M463.315,48.684c-64.91-64.912-170.529-64.912-235.439,0c-42.666,42.666-58.166,104.143-43.068,160.789L4.878,389.403 c-3.122,3.122-4.877,7.356-4.877,11.771v94.177c0,9.194,7.454,16.648,16.648,16.648h94.177c4.415,0,8.649-1.755,11.771-4.877 l23.544-23.544c3.122-3.122,4.876-7.356,4.876-11.771v-30.44h30.44c4.415,0,8.649-1.754,11.771-4.876l23.545-23.545 c3.122-3.122,4.876-7.356,4.876-11.771v-30.44h30.44c4.415,0,8.649-1.755,11.771-4.877l38.664-38.664 c56.652,15.1,118.123-0.403,160.789-43.068C528.227,219.216,528.227,113.597,463.315,48.684z M439.774,260.581 c-35.956,35.956-88.336,48.228-136.702,32.026c-5.988-2.007-12.595-0.452-17.06,4.013l-40.816,40.816h-40.192 c-9.194,0-16.648,7.454-16.648,16.648v40.192l-13.793,13.793h-40.192c-9.194,0-16.648,7.454-16.648,16.648v40.192l-13.791,13.793 H33.298V408.07l182.081-182.081c4.465-4.465,6.02-11.072,4.014-17.06c-16.201-48.366-3.929-100.746,32.026-136.702 c51.93-51.928,136.424-51.929,188.355,0C491.702,124.157,491.702,208.653,439.774,260.581z"/> </g></g><g><g><path d="M416.229,95.773c-25.965-25.966-68.213-25.966-94.177,0c-25.965,25.965-25.965,68.211,0,94.177 c25.964,25.965,68.211,25.966,94.177,0C442.194,163.986,442.194,121.739,416.229,95.773z M392.685,166.405 c-12.982,12.981-34.106,12.981-47.089,0c-12.982-12.982-12.982-34.106,0-47.089c12.982-12.981,34.106-12.982,47.089,0 C405.667,132.299,405.667,153.423,392.685,166.405z"/></g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g></svg>'+
-        '</div>' +
+        '<div class="auth_enter-forgot m-t10">' +
+        '<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" fill="#fff" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512;" xml:space="preserve"><g><g><path d="M463.315,48.684c-64.91-64.912-170.529-64.912-235.439,0c-42.666,42.666-58.166,104.143-43.068,160.789L4.878,389.403 c-3.122,3.122-4.877,7.356-4.877,11.771v94.177c0,9.194,7.454,16.648,16.648,16.648h94.177c4.415,0,8.649-1.755,11.771-4.877 l23.544-23.544c3.122-3.122,4.876-7.356,4.876-11.771v-30.44h30.44c4.415,0,8.649-1.754,11.771-4.876l23.545-23.545 c3.122-3.122,4.876-7.356,4.876-11.771v-30.44h30.44c4.415,0,8.649-1.755,11.771-4.877l38.664-38.664 c56.652,15.1,118.123-0.403,160.789-43.068C528.227,219.216,528.227,113.597,463.315,48.684z M439.774,260.581 c-35.956,35.956-88.336,48.228-136.702,32.026c-5.988-2.007-12.595-0.452-17.06,4.013l-40.816,40.816h-40.192 c-9.194,0-16.648,7.454-16.648,16.648v40.192l-13.793,13.793h-40.192c-9.194,0-16.648,7.454-16.648,16.648v40.192l-13.791,13.793 H33.298V408.07l182.081-182.081c4.465-4.465,6.02-11.072,4.014-17.06c-16.201-48.366-3.929-100.746,32.026-136.702 c51.93-51.928,136.424-51.929,188.355,0C491.702,124.157,491.702,208.653,439.774,260.581z"/> </g></g><g><g><path d="M416.229,95.773c-25.965-25.966-68.213-25.966-94.177,0c-25.965,25.965-25.965,68.211,0,94.177 c25.964,25.965,68.211,25.966,94.177,0C442.194,163.986,442.194,121.739,416.229,95.773z M392.685,166.405 c-12.982,12.981-34.106,12.981-47.089,0c-12.982-12.982-12.982-34.106,0-47.089c12.982-12.981,34.106-12.982,47.089,0 C405.667,132.299,405.667,153.423,392.685,166.405z"/></g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g></svg>' +
+        "</div>" +
         "</div>" +
         "<div class='auth_enter-buttons f jc-sb'>" +
         "<div class='auth_enter-confirm' id='login-button'>Войти</div>" +
@@ -817,7 +887,7 @@ if (!authContainer && !authProfile) {
     !document.querySelector(".contact-title")
   ) {
     if (getWithExpiry("token")) {
-  // if(true) {
+      // if(true) {
       console.log(docFull);
 
       setTimeout(() => {
@@ -826,9 +896,13 @@ if (!authContainer && !authProfile) {
           console.log("YEP");
           if (document.querySelector(".post-filters_main")) {
             let form = {};
-            let params = "";
-            form.ed_type = "Платной";
-            form.ei_type = "вуз";
+        let nameSelect = document.getElementById("name");
+        let n;
+        let optValue = "";
+        let params = "";
+        form.ei_type = "вуз";
+        form.ed_type = "Платной";
+            
 
             document.querySelectorAll(".ei-item").forEach((e) => {
               e.addEventListener("click", (event) => {
@@ -849,7 +923,7 @@ if (!authContainer && !authProfile) {
                     form.ei_type
                   );
                   doTask(institutionsGet(params));
-                  setEis()
+                  setEis();
                 }
                 console.log(form);
               });
@@ -870,8 +944,7 @@ if (!authContainer && !authProfile) {
                     form.ei_type
                   );
                   doTask(institutionsGet(params));
-                  setEis()
-
+                  setEis();
                 } else delete form.region;
                 console.log(form);
                 console.log(params);
@@ -889,24 +962,53 @@ if (!authContainer && !authProfile) {
                 console.log(form);
               });
             });
-            function setEis () {
-              let ei = document.getElementById('name')
-             
-              setTimeout(()=>{console.log(eis)
-                ei.innerHTML = ''
-                eis.forEach((e,i) => {
-                  ei.innerHTML+= 
-                  `<option value=${e.name}>${e.alias}</option>`
-                })},3000)
-                
+            function setEis() {
+              let ei = document.getElementById("name");
+
+              setTimeout(() => {
+                console.log(eis);
+                ei.innerHTML =
+                  '<option value="", selected> Наименование УО</option>';
+                eis.forEach((e) => {
+                  optValue = "";
+                  optValue = optValue.concat(e.name, "|", e.id);
+    
+                  ei.innerHTML += `<option value="${optValue}">${e.alias}</option>`;
+                });
+                console.log(nameSelect.querySelectorAll("option"));
+              }, 3000);
             }
-          
-            
+            nameSelect.addEventListener("change", (e) => {
+              n = nameSelect.options.selectedIndex;
+              // console.log(nameSelect.options[n].text)
+              console.log(optValue);
+              let optValueSep = e.target.value.split("|");
+              console.log(optValueSep);
+              form.ed_alias = nameSelect.options[n].text;
+              form.ed_name = optValueSep[0];
+              form.ed_id = optValueSep[1];
+              console.log(form);
+              console.log(e.target.text);
+              doTask(institutionID(form.ed_id));
+              
+              //asd
+            });
+            let d
+            document.querySelector('.post-send').addEventListener('click', (e)=> {
+              console.log(e.target)
+              let d = document.getElementById('specs').options.selectedIndex
+              if(specs[0].alias) {
+                
+
+                doTask(specPost(document.getElementById('specs').options[d].value.split('|')[1]))
+              }
+            })
             // ei.innerHTML+=
           }
+
         } else {
           console.log("Accepted");
-      
+
           clearParent(blockContainer);
           blockContainer.innerHTML =
             "<div class='block-auth f f-col ai'>" +
@@ -942,12 +1044,12 @@ if (!authContainer && !authProfile) {
       //   console.log(news)
     }
 
-    if (document.querySelector('.contact-title')) {
+    if (document.querySelector(".contact-title")) {
       if (document.querySelector(".contact-search")) {
         let form = {};
-        let nameSelect = document.getElementById('name')
-        let n
-        let optValue = ''
+        let nameSelect = document.getElementById("name");
+        let n;
+        let optValue = "";
         let params = "";
         form.ei_type = "вуз";
 
@@ -960,9 +1062,9 @@ if (!authContainer && !authProfile) {
             } else {
               form.ei_type = "суз";
             }
-            document.querySelector('.contact-info_phone').innerHTML= ''
-          document.querySelector('.contact-info_alias').innerHTML= ''
-          document.querySelector('.contact-info_name').innerHTML= ''
+            document.querySelector(".contact-info_phone").innerHTML = "";
+            document.querySelector(".contact-info_alias").innerHTML = "";
+            document.querySelector(".contact-info_name").innerHTML = "";
 
             if (form.region) {
               params = "";
@@ -973,88 +1075,82 @@ if (!authContainer && !authProfile) {
                 form.ei_type
               );
               doTask(institutionsGet(params));
-              setEis()
+              setEis();
             }
             console.log(form);
           });
         });
 
         // let region = document.getElementById('#region')
-        document
-          .getElementById("region")
-          .addEventListener("change", (e) => {
-            document.querySelector('.contact-info_phone').innerHTML= ''
-            document.querySelector('.contact-info_alias').innerHTML= ''
-            document.querySelector('.contact-info_name').innerHTML= ''
-            // console.log(e.target.value)
-            if (e.target.value != "") {
-              form.region = e.target.value;
-              params = "";
-              params = params.concat(
-                "?region=",
-                form.region,
-                "&type=",
-                form.ei_type
-              );
-              doTask(institutionsGet(params));
-              setEis()
+        document.getElementById("region").addEventListener("change", (e) => {
+          document.querySelector(".contact-info_phone").innerHTML = "";
+          document.querySelector(".contact-info_alias").innerHTML = "";
+          document.querySelector(".contact-info_name").innerHTML = "";
+          // console.log(e.target.value)
+          if (e.target.value != "") {
+            form.region = e.target.value;
+            params = "";
+            params = params.concat(
+              "?region=",
+              form.region,
+              "&type=",
+              form.ei_type
+            );
+            doTask(institutionsGet(params));
+            setEis();
+          } else delete form.region;
+          console.log(form);
+          console.log(params);
+        });
 
-            } else delete form.region;
-            console.log(form);
-            console.log(params);
-          });
-
-       
-        function setEis () {
-          let ei = document.getElementById('name')
-          setTimeout(()=>{console.log(eis)
-            ei.innerHTML = '<option value="", selected> Наименование УО</option>'
+        function setEis() {
+          let ei = document.getElementById("name");
+          setTimeout(() => {
+            console.log(eis);
+            ei.innerHTML =
+              '<option value="", selected> Наименование УО</option>';
             eis.forEach((e) => {
-              optValue = ''
-              optValue = optValue.concat(e.name, '|', e.id)
-              
-              ei.innerHTML+= 
-              `<option value="${optValue}">${e.alias}</option>`
-              
-            }
-            )
-            console.log(nameSelect.querySelectorAll('option'))
+              optValue = "";
+              optValue = optValue.concat(e.name, "|", e.id);
+
+              ei.innerHTML += `<option value="${optValue}">${e.alias}</option>`;
+            });
+            console.log(nameSelect.querySelectorAll("option"));
             // nameSelect.querySelectorAll('option').forEach(e => {
             //   // console.log(e)
             //   e.addEventListener('select', ()=>{console.log(e)})
             // })
-          },2000)
-            
+          }, 2000);
         }
         // console.log(
         //   document.getElementById('name'))
-        
-        nameSelect.addEventListener('change', (e)=> {
+
+        nameSelect.addEventListener("change", (e) => {
           n = nameSelect.options.selectedIndex;
           // console.log(nameSelect.options[n].text)
-          console.log(optValue)
-          let optValueSep = e.target.value.split('|')
-          console.log(optValueSep)
-          form.ed_alias = nameSelect.options[n].text
-          form.ed_name = optValueSep[0]
-          form.ed_id = optValueSep[1]
-          console.log(form)
-          console.log(e.target.text)
-          document.querySelector('.contact-info_phone').innerHTML= ''
-          document.querySelector('.contact-info_alias').innerHTML= ''
-          document.querySelector('.contact-info_name').innerHTML= ''
-          doTask(institutionID(form?.ed_id))
+          console.log(optValue);
+          let optValueSep = e.target.value.split("|");
+          console.log(optValueSep);
+          form.ed_alias = nameSelect.options[n].text;
+          form.ed_name = optValueSep[0];
+          form.ed_id = optValueSep[1];
+          console.log(form);
+          console.log(e.target.text);
+          document.querySelector(".contact-info_phone").innerHTML = "";
+          document.querySelector(".contact-info_alias").innerHTML = "";
+          document.querySelector(".contact-info_name").innerHTML = "";
+          doTask(institutionID(form?.ed_id));
           setTimeout(() => {
-            
-            document.querySelector('.contact-info_alias').innerHTML= form?.ed_alias
-            document.querySelector('.contact-info_name').innerHTML= form?.ed_name
-            form.ed_phone = contact_phone
-            document.querySelector('.contact-info_phone').innerHTML= form?.ed_phone
-          },2000)
-          
-        })
-        
-        
+            document.querySelector(".contact-info_alias").innerHTML =
+              form?.ed_alias;
+            document.querySelector(".contact-info_name").innerHTML =
+              form?.ed_name;
+            form.ed_phone = contact_phone;
+            document.querySelector(".contact-info_phone").innerHTML =
+              form?.ed_phone;
+          }, 2000);
+        });
+
         // ei.innerHTML+=
       }
     }
@@ -1064,27 +1160,28 @@ if (!authContainer && !authProfile) {
 }
 
 if (authProfile) {
-  
-  doTask(myProfileGet())
+  doTask(myProfileGet());
   // console.log(pros)
-  
-  setTimeout(()=> {
-    console.log(profile)
-    if(profileInited) {
-      document.getElementById("surname").value = profile?.last_name
-    document.getElementById("name").value = profile?.first_name
-    document.getElementById("lastname").value = profile?.middle_name
-    document.getElementById("date").value = profile?.birth_date.split('.').reverse().join('-')
-    document.getElementById("registrate_place").value = profile?.registration_address
-    document.getElementById("living_place").value = profile?.living_address
-    document.getElementById("tel").value = profile?.phone
-    }
-    
-    
 
-    console.log(document.getElementById("date").value)
-  },2000)
- 
+  setTimeout(() => {
+    console.log(profile);
+    if (profileInited) {
+      document.getElementById("surname").value = profile?.last_name;
+      document.getElementById("name").value = profile?.first_name;
+      document.getElementById("lastname").value = profile?.middle_name;
+      document.getElementById("date").value = profile?.birth_date
+        .split(".")
+        .reverse()
+        .join("-");
+      document.getElementById("registrate_place").value =
+        profile?.registration_address;
+      document.getElementById("living_place").value = profile?.living_address;
+      document.getElementById("tel").value = profile?.phone;
+    }
+
+    console.log(document.getElementById("date").value);
+  }, 2000);
+
   console.log(1111);
   const form = {};
 
@@ -1143,10 +1240,11 @@ if (authProfile) {
   // }
 
   document.getElementById("first-next").addEventListener("click", () => {
-    document.querySelectorAll('input').forEach (e => {
-      if (e.name == 'date') { form[e.name] = e.value.split('-').reverse().join('.');  }else form[e.name] = e.value
-      
-    })
+    document.querySelectorAll("input").forEach((e) => {
+      if (e.name == "date") {
+        form[e.name] = e.value.split("-").reverse().join(".");
+      } else form[e.name] = e.value;
+    });
     console.log(profileStatus);
     if (profileStatus) {
       doTask(myProfileName(form));
@@ -1204,18 +1302,21 @@ if (authProfile) {
       "</a>" +
       "<div id='second-next' class='auth-next f'>Перейти далее<div class='auth-container_img'><img src='/img/svg/arrow-next.svg' alt=''></div></div>" +
       "</div>";
-      if(profileInited) {
-      document.getElementById("doc_serial").value = profile?.personal_document?.series
-      document.getElementById("doc_number").value = profile?.personal_document?.number
-      document.getElementById("doc_date").value = profile?.personal_document?.emission_date.split('.').reverse().join('-')
-      document.getElementById("doc_place").value = profile?.personal_document?.agency_name
-      document.getElementById("doc_id").value = profile?.personal_document?.identification_number
-      }
-
-     
-
-    
-
+    if (profileInited) {
+      document.getElementById("doc_serial").value =
+        profile?.personal_document?.series;
+      document.getElementById("doc_number").value =
+        profile?.personal_document?.number;
+      document.getElementById("doc_date").value =
+        profile?.personal_document?.emission_date
+          .split(".")
+          .reverse()
+          .join("-");
+      document.getElementById("doc_place").value =
+        profile?.personal_document?.agency_name;
+      document.getElementById("doc_id").value =
+        profile?.personal_document?.identification_number;
+    }
 
     document.getElementById("doc_serial").onchange = (event) => {
       form[event.target.name] = event.target.value;
@@ -1266,10 +1367,12 @@ if (authProfile) {
     // select.onselect(console.log(1))
 
     document.getElementById("second-next").addEventListener("click", () => {
-      document.querySelectorAll('input').forEach (e => {
-        if (e.name == 'doc_date') form[e.name] = e.value.split('-').reverse().join('.'); else form[e.name] = e.value
-        console.log(e.name , e.value)
-      })
+      document.querySelectorAll("input").forEach((e) => {
+        if (e.name == "doc_date")
+          form[e.name] = e.value.split("-").reverse().join(".");
+        else form[e.name] = e.value;
+        console.log(e.name, e.value);
+      });
       doTask(myProfilePersonal(form));
       clearParent(authProfile);
       authProfile.innerHTML =
@@ -1447,14 +1550,18 @@ if (authProfile) {
           "</div>" +
           "<div id='fourth-next' class='auth-next f'>Перейти далее<div class='auth-container_img'><img src='/img/svg/arrow-next.svg' alt=''></div></div>";
 
-
-          if(profileInited) {
-      document.getElementById("dad_name").value = profile?.father?.first_name
-      document.getElementById("dad_surname").value = profile?.father?.last_name
-      document.getElementById("dad_lastname").value = profile?.father?.middle_name
-      document.getElementById("dad_address").value = profile?.father?.living_address
-      document.getElementById("dad_tel").value = profile?.father?.phone_number
-          }
+        if (profileInited) {
+          document.getElementById("dad_name").value =
+            profile?.father?.first_name;
+          document.getElementById("dad_surname").value =
+            profile?.father?.last_name;
+          document.getElementById("dad_lastname").value =
+            profile?.father?.middle_name;
+          document.getElementById("dad_address").value =
+            profile?.father?.living_address;
+          document.getElementById("dad_tel").value =
+            profile?.father?.phone_number;
+        }
         document.getElementById("dad_name").onchange = (event) => {
           form[event.target.name] = event.target.value;
           console.log(form);
@@ -1518,13 +1625,18 @@ if (authProfile) {
             "</div>" +
             "<div id='fifth-next' class='auth-next f'>Перейти далее<div class='auth-container_img'><img src='/img/svg/arrow-next.svg' alt=''></div></div>";
 
-            if(profileInited) {
-            document.getElementById("mom_name").value = profile?.mother?.first_name
-            document.getElementById("mom_surname").value = profile?.mother?.last_name
-            document.getElementById("mom_lastname").value = profile?.mother?.middle_name
-            document.getElementById("mom_address").value = profile?.mother?.living_address
-            document.getElementById("mom_tel").value = profile?.mother?.phone_number
-            }
+          if (profileInited) {
+            document.getElementById("mom_name").value =
+              profile?.mother?.first_name;
+            document.getElementById("mom_surname").value =
+              profile?.mother?.last_name;
+            document.getElementById("mom_lastname").value =
+              profile?.mother?.middle_name;
+            document.getElementById("mom_address").value =
+              profile?.mother?.living_address;
+            document.getElementById("mom_tel").value =
+              profile?.mother?.phone_number;
+          }
           document.getElementById("mom_name").onchange = (event) => {
             form[event.target.name] = event.target.value;
             console.log(form);
@@ -1593,13 +1705,21 @@ if (authProfile) {
                 "<input type='text' id='privil_place' name='privil_place'>" +
                 "</div>" +
                 "<div id='sixth-next' class='auth-next f'>Перейти далее<div class='auth-container_img'><img src='/img/svg/arrow-next.svg' alt=''></div></div>";
-                if(profileInited) {
-                document.getElementById("privil").value = profile?.privilege_document?.name
-                document.getElementById("privil_series").value = profile?.privilege_document?.series
-                document.getElementById("privil_number").value = profile?.privilege_document?.number
-                document.getElementById("privil_date").value = profile?.privilege_document?.emission_date.split('.').reverse().join('-')
-                document.getElementById("privil_place").value = profile?.privilege_document?.agency_name
-                }
+              if (profileInited) {
+                document.getElementById("privil").value =
+                  profile?.privilege_document?.name;
+                document.getElementById("privil_series").value =
+                  profile?.privilege_document?.series;
+                document.getElementById("privil_number").value =
+                  profile?.privilege_document?.number;
+                document.getElementById("privil_date").value =
+                  profile?.privilege_document?.emission_date
+                    .split(".")
+                    .reverse()
+                    .join("-");
+                document.getElementById("privil_place").value =
+                  profile?.privilege_document?.agency_name;
+              }
 
               document.getElementById("privil").onchange = (event) => {
                 form[event.target.name] = event.target.value;
@@ -1631,12 +1751,12 @@ if (authProfile) {
                   doTask(myProfilePrivil(form));
                   clearParent(authProfile);
                   authProfile.innerHTML =
-                    "<div class='auth-profile_ct'>"+
-                    "<div class = 'f jc-sb'>"+
+                    "<div class='auth-profile_ct'>" +
+                    "<div class = 'f jc-sb'>" +
                     "<div>Результаты ЦТ</div>" +
                     "<div>Балл</div>" +
-                    "</div>"+
-                    "<div class = 'f f-col'>"+
+                    "</div>" +
+                    "<div class = 'f f-col'>" +
                     "<div class='f ai jc-sb'><div>1</div>" +
                     "<select class='auth-input_sub-item'>" +
                     "<option value='' selected>Предмет</option>" +
@@ -1707,28 +1827,26 @@ if (authProfile) {
                     "<option value='Химия' >Химия</option>" +
                     "<option value='Физика' >Физика</option>" +
                     "</select>" +
-                    
                     "<div class='auth-input'><input class='__mark' type='text'></div>" +
                     "</div>" +
-                    "</div>"+
-                    "</div>"+
+                    "</div>" +
+                    "</div>" +
                     "<div class='auth-input ai f'><label for='ct'>Балл в аттестате</label><input type='text' id='ct'></div>" +
                     "<div id='last-next' class='auth-next f'>Подать документы<div class='auth-container_img'><img src='/img/svg/arrow-next.svg' alt=''></div></div>";
-                    
 
-                    // document.getElementById("privil").value = profile?.privilege_document?.name
+                  // document.getElementById("privil").value = profile?.privilege_document?.name
 
-                    // document
-                    // .querySelectorAll(".auth-input_sub-item")
-                    // .forEach((elem, i) =>
-                    //   elem.addEventListener("change", (e) => {
-                    //     i += 1;
-                    //     e.target.value = ;
-                    //     i -= 1;
-                    //     console.log(form);
-                    //     // form[sub].name = e.target.value console.log(form)
-                    //   })
-                    // );
+                  // document
+                  // .querySelectorAll(".auth-input_sub-item")
+                  // .forEach((elem, i) =>
+                  //   elem.addEventListener("change", (e) => {
+                  //     i += 1;
+                  //     e.target.value = ;
+                  //     i -= 1;
+                  //     console.log(form);
+                  //     // form[sub].name = e.target.value console.log(form)
+                  //   })
+                  // );
 
                   document
                     .querySelectorAll(".auth-input_sub-item")
@@ -1782,9 +1900,7 @@ if (authProfile) {
                       // doTask(myProfile(form));
                       // TEST
 
-                      
-                      document.location.href =
-                        "/send_documents.html";
+                      document.location.href = "/send_documents.html";
                     });
                 });
             });
