@@ -6,6 +6,7 @@ const dayTime = 86400000;
 const second = 600000;
 let news = [];
 let eis = [];
+let adminStatus = false;
 let profile = {};
 let prof = {};
 let profileInited = true;
@@ -13,7 +14,7 @@ let contact_phone = "";
 let entryStatus = false;
 let profileStatus = false;
 let docFull = false;
-let specs = []
+let specs = [];
 // let reqDebug = "http://localhost:8000";
 let reqDebug = 'http://enrollee.by'
 
@@ -367,12 +368,38 @@ const myProfileSub = async (data) => {
 };
 //zxc
 
+const forgot = (email) => {
+  // console.log(getWithExpiry("token"));
+  // console.log(prof?.id, parseInt(id));
+  // if (getWithExpiry("token")) {
+  return new Promise((resolve, reject) => {
+    fetch(reqDebug.concat("/api/v1/users/reset_password/"), {
+      method: "POST",
+      headers: {
+        Host: reqDebug,
+        // Authorization: "Bearer " + getWithExpiry("token"),
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        "X-CSRFToken":
+          "Gzadcved0Ggks9TOH0ckzm3iUTXyO951KwZihb3oPDoYxbrRX5Ia38PqHxuelQQz",
+      },
+      body: JSON.stringify({
+        email,
+      }),
+    }).then((response) => {
+      resolve(response.json());
+      // console.log(response.json())
+      // console.log("Bearer " +getWithExpiry("token"))
+    });
+  });
+  // } else {
+  // }
+};
 
 const specPost = (id) => {
   console.log(getWithExpiry("token"));
-  console.log(profile)
+  console.log(prof?.id, parseInt(id));
   if (getWithExpiry("token")) {
-
     return new Promise((resolve, reject) => {
       fetch(reqDebug.concat("/api/v1/users/request_specialization/"), {
         method: "POST",
@@ -385,8 +412,8 @@ const specPost = (id) => {
             "Gzadcved0Ggks9TOH0ckzm3iUTXyO951KwZihb3oPDoYxbrRX5Ia38PqHxuelQQz",
         },
         body: JSON.stringify({
-          profile: prof,
-          specialization: id,
+          profile: prof?.id,
+          specialization: parseInt(id),
         }),
       }).then((response) => {
         resolve(response.json());
@@ -555,21 +582,55 @@ const doTask = async (info) => {
   console.log(data);
   profile = data;
 
-  if (document.querySelector('.post-filters_spec')) {
+  if (
+    document.querySelector(".post-filters_spec") ||
+    document.querySelector(".stats") 
+  ) {
+    console.log(data)
     if (data?.alias && data?.contact_phone) {
-      specs = data?.specializations
-      console.log(specs)
-      document.getElementById('specs').innerHTML= ''
-      specs.forEach(e => {
-        let specInfo = ''
-        specInfo= specInfo.concat(e?.alias, '|', e?.id, '|', e?.institution, '|', e?.name)
-         //qwe
-         document.getElementById('specs').innerHTML+= `<option value='${specInfo}'>${e.alias}</option>`
-      })
+      console.log(1)
+      specs = data?.specializations;
+      console.log(specs);
+
+      if(document.querySelector(".stats") ) {
+        let table = document.querySelector('.stats-info')
+
+        specs.forEach(e => {
+          table.innerHTML+= 
+          "<tr class='fav-ei_item f jc-sb'>" +
+                `<td>${e.name}</td><td>${e.alias}</td><td>${
+                  e.institution
+                }</td><td>${e?.budget_rate || "Балл не известен"}</td><td>${
+                  e?.paid_rate || "Балл не известен"
+                }</td>` +
+                "</tr>";
+        })
+      }
+
+      if (document.getElementById("specs")) {
+      document.getElementById("specs").innerHTML = "";
+      specs.forEach((e) => {
+        let specInfo = "";
+        specInfo = specInfo.concat(
+          e?.alias,
+          "|",
+          e?.id,
+          "|",
+          e?.institution,
+          "|",
+          e?.name
+        );
+        //qwe
+        
+          document.getElementById(
+            "specs"
+          ).innerHTML += `<option value='${specInfo}'>${e.alias}</option>`;
       
+      });
     }
-    if(data?.birth_date) {
-      prof = data
+    }
+    if (data?.birth_date) {
+      prof = data;
     }
   }
 
@@ -586,14 +647,27 @@ const doTask = async (info) => {
       if (data?.status_code == 400) {
       }
     } else {
-      setWithExpiry("token", data?.access, dayTime);
-      entryStatus = true;
-      createAlert('Вход произошел успешно! Нажмите "ОК" для завершения входа');
-      alertWindow
-        .querySelector("#alert-first")
-        .addEventListener("click", () => {
-          document.location.href = "/auth-profile.html";
-        });
+      if (data?.access) {
+        setWithExpiry("token", data?.access, dayTime);
+        createAlert(
+          'Вход произошел успешно! Нажмите "ОК" для завершения входа'
+        );
+        if (data?.admin == true) {
+          setWithExpiry("admin", true, dayTime);
+          alertWindow
+            .querySelector("#alert-first")
+            .addEventListener("click", () => {
+              document.location.href = "/admin-panel.html";
+            });
+        } else {
+          alertWindow
+            .querySelector("#alert-first")
+            .addEventListener("click", () => {
+              document.location.href = "/auth-profile.html";
+            });
+        }
+        entryStatus = true;
+      }
     }
   }
   if (data?.contact_phone) contact_phone = data?.contact_phone;
@@ -606,13 +680,11 @@ const doTask = async (info) => {
     profileStatus = false;
   }
 
-  if (document.querySelector(".contact-search")) {
-    if (data[0]?.alias) {
-      eis = data;
-    }
-  }
-
-  if (document.querySelector(".post-filters_main")) {
+  if (
+    document.querySelector(".contact-search") ||
+    document.querySelector(".post-filters_main") ||
+    document.querySelector(".stats")
+  ) {
     if (data[0]?.alias) {
       eis = data;
     }
@@ -670,13 +742,13 @@ const frontAddress = 'http://enrollee.by'
 // doTask(newsGet())
 console.log(frontAddress.concat("/send_documents.html"));
 console.log(window.location.href);
-
+let items = document.querySelectorAll(".header-info_item");
 if (
   frontAddress.concat("/index.html") == window.location.href ||
   frontAddress == window.location.href
 ) {
   console.log(document.querySelectorAll(".header-info_item"));
-  let items = document.querySelectorAll(".header-info_item");
+  // let items = document.querySelectorAll(".header-info_item");
   items.forEach((e) => {
     e.classList.remove("__main-link");
   });
@@ -685,7 +757,7 @@ if (
 
 if (frontAddress.concat("/statistics.html") == window.location.href) {
   console.log(document.querySelectorAll(".header-info_item"));
-  let items = document.querySelectorAll(".header-info_item");
+  // let items = document.querySelectorAll(".header-info_item");
   items.forEach((e) => {
     e.classList.remove("__main-link");
   });
@@ -694,7 +766,7 @@ if (frontAddress.concat("/statistics.html") == window.location.href) {
 
 if (frontAddress.concat("/documents.html") == window.location.href) {
   console.log(document.querySelectorAll(".header-info_item"));
-  let items = document.querySelectorAll(".header-info_item");
+  // let items = document.querySelectorAll(".header-info_item");
   items.forEach((e) => {
     e.classList.remove("__main-link");
   });
@@ -703,7 +775,7 @@ if (frontAddress.concat("/documents.html") == window.location.href) {
 
 if (frontAddress.concat("/favourite.html") == window.location.href) {
   console.log(document.querySelectorAll(".header-info_item"));
-  let items = document.querySelectorAll(".header-info_item");
+  // let items = document.querySelectorAll(".header-info_item");
   items.forEach((e) => {
     e.classList.remove("__main-link");
   });
@@ -712,7 +784,7 @@ if (frontAddress.concat("/favourite.html") == window.location.href) {
 
 if (frontAddress.concat("/contacts.html") == window.location.href) {
   console.log(document.querySelectorAll(".header-info_item"));
-  let items = document.querySelectorAll(".header-info_item");
+  // let items = document.querySelectorAll(".header-info_item");
   items.forEach((e) => {
     e.classList.remove("__main-link");
   });
@@ -721,7 +793,7 @@ if (frontAddress.concat("/contacts.html") == window.location.href) {
 
 if (frontAddress.concat("/send_documents.html") == window.location.href) {
   console.log(document.querySelectorAll(".header-info_item"));
-  let items = document.querySelectorAll(".header-info_item");
+  // let items = document.querySelectorAll(".header-info_item");
   items.forEach((e) => {
     e.classList.remove("__main-link");
   });
@@ -729,22 +801,22 @@ if (frontAddress.concat("/send_documents.html") == window.location.href) {
 }
 
 if (frontAddress.concat("/auth.html") == window.location.href) {
-  console.log(document.querySelectorAll(".header-info_item"));
-  let items = document.querySelectorAll(".header-info_item");
+  // let items = document.querySelectorAll(".header-info_item");
   items.forEach((e) => {
     e.classList.remove("__main-link");
   });
   items[6].classList.add("__main-link");
+  // console.log(getWithExpiry('admin'))
 }
-
 if (getWithExpiry("token")) {
-  let items = document.querySelectorAll(".header-info_item");
-  items.forEach((e) => {
-    e.classList.remove("__main-link");
-  });
-  items[6].innerHTML = "Выход/ адрес электронной почты";
-}
+  if (!getWithExpiry("admin")) {
+    // console.log(document.querySelectorAll(".header-info_item"));
 
+    items[6].innerHTML = "Выход/ Редактирование данных";
+  } else {
+    items[6].innerHTML = "Выход/ Просмотреть заявки";
+  }
+}
 document.querySelector(".header-menu-icon").addEventListener("click", () => {
   document.querySelector(".header").classList.toggle("active");
 });
@@ -753,14 +825,23 @@ document.querySelector(".header-menu-icon").addEventListener("click", () => {
 if (authContainer) {
   if (getWithExpiry("token")) {
     clearParent(authContainer);
-    authContainer.innerHTML =
-      "<div class = 'auth-reg f sc f-col'>" +
-      "<a href='/auth-profile.html' class='auth-reg_link tac'>Редактировать/ввести личные данные</a>" +
-      "<div class='auth-reg_link tac' id='logout'>Выйти</div>" +
-      "</div>";
+    if (!getWithExpiry("admin")) {
+      authContainer.innerHTML =
+        "<div class = 'auth-reg f sc f-col'>" +
+        "<a href='/auth-profile.html' class='auth-reg_link tac'>Редактировать/ввести личные данные</a>" +
+        "<div class='auth-reg_link tac' id='logout'>Выйти</div>" +
+        "</div>";
+    } else {
+      authContainer.innerHTML =
+        "<div class = 'auth-reg f sc f-col'>" +
+        "<a href='/admin-panel.html' class='auth-reg_link tac'>Просмотреть заявки</a>" +
+        "<div class='auth-reg_link tac' id='logout'>Выйти</div>" +
+        "</div>";
+    }
 
     document.getElementById("logout").addEventListener("click", () => {
       localStorage.removeItem("token");
+      localStorage.removeItem("admin");
       window.location.reload("true");
     });
   } else {
@@ -854,6 +935,17 @@ if (authContainer) {
         console.log(data);
       };
       document
+        .querySelector(".auth_enter-forgot")
+        .addEventListener("click", () => {
+          if (data?.email) {
+            doTask(forgot(data?.email));
+            createAlert("Ключ к восстановлению пароля отправлен на Вашу почту");
+          } else {
+            createAlert("Введите вашу почту для восстановления пароля");
+          }
+        });
+
+      document
         .querySelector(".auth_enter-confirm")
         .addEventListener("click", () => {
           // console.log(logIn(data))
@@ -896,13 +988,12 @@ if (!authContainer && !authProfile) {
           console.log("YEP");
           if (document.querySelector(".post-filters_main")) {
             let form = {};
-        let nameSelect = document.getElementById("name");
-        let n;
-        let optValue = "";
-        let params = "";
-        form.ei_type = "вуз";
-        form.ed_type = "Платной";
-            
+            let nameSelect = document.getElementById("name");
+            let n;
+            let optValue = "";
+            let params = "";
+            form.ei_type = "вуз";
+            form.ed_type = "Платной";
 
             document.querySelectorAll(".ei-item").forEach((e) => {
               e.addEventListener("click", (event) => {
@@ -972,7 +1063,7 @@ if (!authContainer && !authProfile) {
                 eis.forEach((e) => {
                   optValue = "";
                   optValue = optValue.concat(e.name, "|", e.id);
-    
+
                   ei.innerHTML += `<option value="${optValue}">${e.alias}</option>`;
                 });
                 console.log(nameSelect.querySelectorAll("option"));
@@ -990,22 +1081,59 @@ if (!authContainer && !authProfile) {
               console.log(form);
               console.log(e.target.text);
               doTask(institutionID(form.ed_id));
-              
+
               //asd
             });
-            let d
-            document.querySelector('.post-send').addEventListener('click', (e)=> {
-              console.log(e.target)
-              let d = document.getElementById('specs').options.selectedIndex
-              if(specs[0].alias) {
-                
-
-                doTask(specPost(document.getElementById('specs').options[d].value.split('|')[1]))
-              }
-            })
+            let d;
+            document
+              .querySelector(".post-send")
+              .addEventListener("click", (e) => {
+                console.log(e.target);
+                let d = document.getElementById("specs").options.selectedIndex;
+                if (specs[0].alias) {
+                  doTask(
+                    specPost(
+                      document
+                        .getElementById("specs")
+                        .options[d].value.split("|")[1]
+                    )
+                  );
+                }
+                createAlert(
+                  `Ваше заявление отправлено на рассмотрение представителю учережднения "${form?.ed_name}".Хотите отправить еще одно заявление`,
+                  "Да",
+                  "Нет"
+                );
+                alertWindow
+                  .querySelector("#alert-first")
+                  .addEventListener("click", () => {
+                    document.location.href = "/send_documents.html";
+                  });
+                alertWindow
+                  .querySelector("#alert-last")
+                  .addEventListener("click", () => {
+                    document.location.href = "/favourite.html";
+                  });
+              });
             // ei.innerHTML+=
           }
 
+          if (document.querySelector(".fav")) {
+            // console.log(profile);
+            const specs = profile.specializations;
+            console.log(specs);
+            let table = document.querySelector(".fav-ei");
+            specs.forEach((e) => {
+              table.innerHTML +=
+                "<tr class='fav-ei_item f jc-sb'>" +
+                `<td>${e.name}</td><td>${e.alias}</td><td>${
+                  e.institution
+                }</td><td>${e?.budget_rate || "Балл не известен"}</td><td>${
+                  e?.paid_rate || "Балл не известен"
+                }</td>` +
+                "</tr>";
+            });
+          } else console.log(112);
         } else {
           console.log("Accepted");
 
@@ -1153,6 +1281,107 @@ if (!authContainer && !authProfile) {
 
         // ei.innerHTML+=
       }
+    }
+    if (document.querySelector(".stats")) {
+      let form = {};
+      let nameSelect = document.getElementById("name");
+      let n;
+      let optValue = "";
+      let params = "";
+      form.ei_type = "вуз";
+
+      document.querySelectorAll(".ei-item").forEach((e) => {
+        e.addEventListener("click", (event) => {
+          console.log(1);
+          filter(".ei-item", event.target, "active");
+          if (e.innerText == "ВУЗ") {
+            form.ei_type = "вуз";
+          } else {
+            form.ei_type = "суз";
+          }
+
+          if (form.region) {
+            params = "";
+            params = params.concat(
+              "?region=",
+              form.region,
+              "&type=",
+              form.ei_type
+            );
+            doTask(institutionsGet(params));
+            setEis();
+          }
+          console.log(form);
+        });
+      });
+
+      // let region = document.getElementById('#region')
+      document.getElementById("region").addEventListener("change", (e) => {
+        // console.log(e.target.value)
+        if (e.target.value != "") {
+          form.region = e.target.value;
+          params = "";
+          params = params.concat(
+            "?region=",
+            form.region,
+            "&type=",
+            form.ei_type
+          );
+          doTask(institutionsGet(params));
+          setEis();
+        } else delete form.region;
+        console.log(form);
+        console.log(params);
+      });
+
+      function setEis() {
+        let ei = document.getElementById("name");
+        setTimeout(() => {
+          console.log(eis);
+          ei.innerHTML = '<option value="", selected> Наименование УО</option>';
+          eis.forEach((e) => {
+            optValue = "";
+            optValue = optValue.concat(e.name, "|", e.id);
+
+            ei.innerHTML += `<option value="${optValue}">${e.alias}</option>`;
+          });
+          console.log(nameSelect.querySelectorAll("option"));
+          // nameSelect.querySelectorAll('option').forEach(e => {
+          //   // console.log(e)
+          //   e.addEventListener('select', ()=>{console.log(e)})
+          // })
+        }, 2000);
+      }
+      // console.log(
+      //   document.getElementById('name'))
+
+      nameSelect.addEventListener("change", (e) => {
+        n = nameSelect.options.selectedIndex;
+        // console.log(nameSelect.options[n].text)
+        console.log(optValue);
+        let optValueSep = e.target.value.split("|");
+        console.log(optValueSep);
+        form.ed_alias = nameSelect.options[n].text;
+        form.ed_name = optValueSep[0];
+        form.ed_id = optValueSep[1];
+        console.log(form);
+        // console.log(e.target.text);
+      });
+
+      document
+        .querySelector(".stats-selects_update")
+        .addEventListener("click", () => {
+          document.querySelector('.stats-info').innerHTML = 
+          '<tr class="fav-ei_item f jc-sb">'+
+          '<td>Специальность</td>'+
+          '<td>Полное название</td>'+
+          '<td>Учреждение образования</td>'+
+          '<td>Проходной балл Бюджет</td>'+
+          '<td>Проходной балл Платный</td>'+
+        '</tr>'
+          if (nameSelect.value != "") doTask(institutionID(form?.ed_id));
+
+        });
     }
   }
 } else {

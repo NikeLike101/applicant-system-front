@@ -1,5 +1,5 @@
 .block-container
-    .stats
+    .stats.f.f-col.ai
         .stats-selects.f.f-col.m-t10.ai
             .stats-selects_blocks.f
                     .auth-input_bullet-container.f
@@ -17,7 +17,13 @@
                                 option(value="Витебская область") Витебская
                             select.post-filters_place-item#name
                                 option(value="", selected) Наименования УО
-                            select.post-filters_place-item#sub
-                                option(value="", selected) Специальность
+                            //- select.post-filters_place-item#sub
+                            //-     option(value="", selected) Специальность
             .stats-selects_update Обновить
-        .stats-info 
+        table.stats-info.f.f-col.tac.m-t10
+            //- tr.fav-ei_item.f.jc-sb
+            //-     td Специальность
+            //-     td Полное название
+            //-     td Учреждение образования
+            //-     td Проходной балл Бюджет
+            //-     td Проходной балл Платный
