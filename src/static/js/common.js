@@ -9,6 +9,9 @@ let eis = [];
 let adminStatus = false;
 let profile = {};
 let prof = {};
+let specStatus = false;
+let adminInfo = [];
+let adminSpecs = []
 let profileInited = true;
 let contact_phone = "";
 let entryStatus = false;
@@ -48,7 +51,7 @@ const createAlert = (text, actionFirst = "ОК", actionLast = null) => {
   if (alertWindow.querySelector("#alert-first"))
     alertWindow.querySelector("#alert-first").addEventListener("click", () => {
       alertWindow.classList.remove("show");
-
+      window.location.reload();
       if (alertWindow.querySelector("#alert-last"))
         alertWindow
           .querySelector(".alert-buttons")
@@ -368,6 +371,34 @@ const myProfileSub = async (data) => {
 };
 //zxc
 
+const specAccept = (id) => {
+  console.log(getWithExpiry("token"));
+  console.log( parseInt(id));
+  if (getWithExpiry("token")) {
+    return new Promise((resolve, reject) => {
+      fetch(reqDebug.concat(`/api/v1/users/request_specialization/${id}/`), {
+        method: "PATCH",
+        headers: {
+          Host: reqDebug,
+          Authorization: "Bearer " + getWithExpiry("token"),
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          "X-CSRFToken":
+            "Gzadcved0Ggks9TOH0ckzm3iUTXyO951KwZihb3oPDoYxbrRX5Ia38PqHxuelQQz",
+        },
+        body: JSON.stringify({
+          approved: true
+        }),
+      }).then((response) => {
+        resolve(response.json());
+        // console.log(response.json())
+        // console.log("Bearer " +getWithExpiry("token"))
+      });
+    });
+  }
+};
+
+
 const forgot = (email) => {
   // console.log(getWithExpiry("token"));
   // console.log(prof?.id, parseInt(id));
@@ -421,7 +452,57 @@ const specPost = (id) => {
         // console.log("Bearer " +getWithExpiry("token"))
       });
     });
-  } else {
+  }
+};
+
+const specInfoGet = (id) => {
+  // console.log(getWithExpiry("token"));
+  // console.log(prof?.id, parseInt(id));
+  if (getWithExpiry("token")) {
+    return new Promise((resolve, reject) => {
+      fetch(
+        reqDebug.concat(`/api/v1/institutions/specializations/${id}`),
+        {
+          method: "GET",
+          headers: {
+            Host: reqDebug,
+            Authorization: "Bearer " + getWithExpiry("token"),
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            "X-CSRFToken":
+              "Gzadcved0Ggks9TOH0ckzm3iUTXyO951KwZihb3oPDoYxbrRX5Ia38PqHxuelQQz",
+          },
+        }
+      ).then((response) => {
+        resolve(response.json());
+        // console.log(response.json())
+        // console.log("Bearer " +getWithExpiry("token"))
+      });
+    });
+  }
+};
+
+const specGet = () => {
+  // console.log(getWithExpiry("token"));
+  // console.log(prof?.id, parseInt(id));
+  if (getWithExpiry("token")) {
+    return new Promise((resolve, reject) => {
+      fetch(reqDebug.concat("/api/v1/users/request_specialization/"), {
+        method: "GET",
+        headers: {
+          Host: reqDebug,
+          Authorization: "Bearer " + getWithExpiry("token"),
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          "X-CSRFToken":
+            "Gzadcved0Ggks9TOH0ckzm3iUTXyO951KwZihb3oPDoYxbrRX5Ia38PqHxuelQQz",
+        },
+      }).then((response) => {
+        resolve(response.json());
+        // console.log(response.json())
+        // console.log("Bearer " +getWithExpiry("token"))
+      });
+    });
   }
 };
 
@@ -582,52 +663,69 @@ const doTask = async (info) => {
   console.log(data);
   profile = data;
 
+  if (document.querySelector(".admin-panel")) {
+    // if (data)
+
+    if (data[0]?.is_budget == true || data[0]?.is_budget == false) {
+      adminInfo = data;
+    }
+
+    if(data?.alias && data?.budget_rate == null || data?.budget_rate) {
+      adminSpecs = data
+    }
+  }
+
+  if (data?.non_field_errors) {
+    specStatus = true;
+    createAlert(
+      "Заявка на эту специальность уже была подана, проверьте введенные данные"
+    );
+  }
+
   if (
     document.querySelector(".post-filters_spec") ||
-    document.querySelector(".stats") 
+    document.querySelector(".stats")
   ) {
-    console.log(data)
+    console.log(data);
     if (data?.alias && data?.contact_phone) {
-      console.log(1)
+      eis = data;
+      console.log(1);
       specs = data?.specializations;
       console.log(specs);
 
-      if(document.querySelector(".stats") ) {
-        let table = document.querySelector('.stats-info')
+      if (document.querySelector(".stats")) {
+        let table = document.querySelector(".stats-info");
 
-        specs.forEach(e => {
-          table.innerHTML+= 
-          "<tr class='fav-ei_item f jc-sb'>" +
-                `<td>${e.name}</td><td>${e.alias}</td><td>${
-                  e.institution
-                }</td><td>${e?.budget_rate || "Балл не известен"}</td><td>${
-                  e?.paid_rate || "Балл не известен"
-                }</td>` +
-                "</tr>";
-        })
+        specs.forEach((e) => {
+          table.innerHTML +=
+            "<tr class='fav-ei_item f jc-sb'>" +
+            `<td>${e.name}</td><td>${e.alias}</td><td>${
+              e?.budget_rate || "Балл не известен"
+            }</td><td>${e?.paid_rate || "Балл не известен"}</td>` +
+            "</tr>";
+        });
       }
 
       if (document.getElementById("specs")) {
-      document.getElementById("specs").innerHTML = "";
-      specs.forEach((e) => {
-        let specInfo = "";
-        specInfo = specInfo.concat(
-          e?.alias,
-          "|",
-          e?.id,
-          "|",
-          e?.institution,
-          "|",
-          e?.name
-        );
-        //qwe
-        
+        document.getElementById("specs").innerHTML = "";
+        specs.forEach((e) => {
+          let specInfo = "";
+          specInfo = specInfo.concat(
+            e?.alias,
+            "|",
+            e?.id,
+            "|",
+            e?.institution,
+            "|",
+            e?.name
+          );
+          //qwe
+
           document.getElementById(
             "specs"
           ).innerHTML += `<option value='${specInfo}'>${e.alias}</option>`;
-      
-      });
-    }
+        });
+      }
     }
     if (data?.birth_date) {
       prof = data;
@@ -984,7 +1082,7 @@ if (!authContainer && !authProfile) {
 
       setTimeout(() => {
         console.log(docFull, 564);
-        if (docFull) {
+        if (docFull || document.querySelector(".admin-panel")) {
           console.log("YEP");
           if (document.querySelector(".post-filters_main")) {
             let form = {};
@@ -1013,7 +1111,11 @@ if (!authContainer && !authProfile) {
                     "&type=",
                     form.ei_type
                   );
-                  doTask(institutionsGet(params));
+                  if (!prof?.specializations[0]) {
+                    doTask(institutionsGet(params));
+                  } else {
+                    doTask(institutionID(prof?.specializations[0].institution));
+                  }
                   setEis();
                 }
                 console.log(form);
@@ -1034,7 +1136,11 @@ if (!authContainer && !authProfile) {
                     "&type=",
                     form.ei_type
                   );
-                  doTask(institutionsGet(params));
+                  if (!prof?.specializations[0]) {
+                    doTask(institutionsGet(params));
+                  } else {
+                    doTask(institutionID(prof?.specializations[0].institution));
+                  }
                   setEis();
                 } else delete form.region;
                 console.log(form);
@@ -1055,17 +1161,27 @@ if (!authContainer && !authProfile) {
             });
             function setEis() {
               let ei = document.getElementById("name");
+              console.log(prof, 1444);
 
               setTimeout(() => {
                 console.log(eis);
                 ei.innerHTML =
                   '<option value="", selected> Наименование УО</option>';
-                eis.forEach((e) => {
-                  optValue = "";
-                  optValue = optValue.concat(e.name, "|", e.id);
+                if (!prof?.specializations[0]) {
+                  eis.forEach((e) => {
+                    optValue = "";
+                    optValue = optValue.concat(e.name, "|", e.id);
 
-                  ei.innerHTML += `<option value="${optValue}">${e.alias}</option>`;
-                });
+                    ei.innerHTML += `<option value="${optValue}">${e.alias}</option>`;
+                  });
+                } else {
+                  // console.log(object)
+                  form.ed_name = eis?.name;
+                  optValue = "";
+                  optValue = optValue.concat(eis.name, "|", eis.id);
+                  ei.innerHTML += `<option selected value="${optValue}">${eis.alias}</option>`;
+                }
+
                 console.log(nameSelect.querySelectorAll("option"));
               }, 3000);
             }
@@ -1084,7 +1200,6 @@ if (!authContainer && !authProfile) {
 
               //asd
             });
-            let d;
             document
               .querySelector(".post-send")
               .addEventListener("click", (e) => {
@@ -1099,21 +1214,23 @@ if (!authContainer && !authProfile) {
                     )
                   );
                 }
-                createAlert(
-                  `Ваше заявление отправлено на рассмотрение представителю учережднения "${form?.ed_name}".Хотите отправить еще одно заявление`,
-                  "Да",
-                  "Нет"
-                );
-                alertWindow
-                  .querySelector("#alert-first")
-                  .addEventListener("click", () => {
-                    document.location.href = "/send_documents.html";
-                  });
-                alertWindow
-                  .querySelector("#alert-last")
-                  .addEventListener("click", () => {
-                    document.location.href = "/favourite.html";
-                  });
+                if (!specStatus) {
+                  createAlert(
+                    `Ваше заявление отправлено на рассмотрение представителю учережднения "${form?.ed_name}". Для подтверждения вашей заявки необходимо подтвердить свои данные в выбранном УО. Хотите отправить еще одно заявление?`,
+                    "Да",
+                    "Нет"
+                  );
+                  alertWindow
+                    .querySelector("#alert-first")
+                    .addEventListener("click", () => {
+                      document.location.href = "/send_documents.html";
+                    });
+                  alertWindow
+                    .querySelector("#alert-last")
+                    .addEventListener("click", () => {
+                      document.location.href = "/favourite.html";
+                    });
+                }
               });
             // ei.innerHTML+=
           }
@@ -1134,6 +1251,39 @@ if (!authContainer && !authProfile) {
                 "</tr>";
             });
           } else console.log(112);
+          if (document.querySelector(".admin-panel")) {
+            doTask(specGet());
+            setTimeout(() => {
+              let adPanel = document.querySelector(".admin-info");
+              adPanel.innerHTML = "";
+              adminInfo.forEach((e) => {
+                doTask(specInfoGet(e.id));
+        
+
+                setTimeout(() => {
+                  console.log(adminSpecs)
+
+                  adPanel.innerHTML+= `<div class='admin-item f ai'><div class='admin-item_name'>Заявка на специальность ${adminSpecs?.alias}</div><div class='admin-item_confirm' data-value=${e.id}> Поддтвердить?</div></div>`
+                }, 2000);
+              });
+              setTimeout(()=>{
+                console.log(1)
+                document.querySelectorAll('.admin-item_confirm').forEach(e => {
+
+                e.addEventListener('click', (event)=> {
+                  // console.log(1)
+                  //ghj
+                  
+                  doTask(specAccept(event.target.getAttribute('data-value')))
+                 console.log() 
+                })
+              })},2000)
+             
+            }, 3000);
+            
+            
+            
+          }
         } else {
           console.log("Accepted");
 
@@ -1371,16 +1521,14 @@ if (!authContainer && !authProfile) {
       document
         .querySelector(".stats-selects_update")
         .addEventListener("click", () => {
-          document.querySelector('.stats-info').innerHTML = 
-          '<tr class="fav-ei_item f jc-sb">'+
-          '<td>Специальность</td>'+
-          '<td>Полное название</td>'+
-          '<td>Учреждение образования</td>'+
-          '<td>Проходной балл Бюджет</td>'+
-          '<td>Проходной балл Платный</td>'+
-        '</tr>'
+          document.querySelector(".stats-info").innerHTML =
+            '<tr class="fav-ei_item f jc-sb">' +
+            "<td>Специальность</td>" +
+            "<td>Полное название</td>" +
+            "<td>Проходной балл Бюджет</td>" +
+            "<td>Проходной балл Платный</td>" +
+            "</tr>";
           if (nameSelect.value != "") doTask(institutionID(form?.ed_id));
-
         });
     }
   }
@@ -2138,5 +2286,5 @@ if (authProfile) {
     });
   });
 } else {
-  doTask(myProfileGet());
+  if (!document.querySelector(".admin-panel")) doTask(myProfileGet());
 }
