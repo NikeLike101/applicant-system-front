@@ -11,15 +11,15 @@ let profile = {};
 let prof = {};
 let specStatus = false;
 let adminInfo = [];
-let adminSpecs = []
+let adminSpecs = [];
 let profileInited = true;
 let contact_phone = "";
 let entryStatus = false;
 let profileStatus = false;
 let docFull = false;
 let specs = [];
-// let reqDebug = "http://localhost:8000";
-let reqDebug = 'http://enrollee.by'
+let reqDebug = "http://localhost:8000";
+// let reqDebug = "http://enrollee.by";
 
 const alertWindow = document.createElement("div");
 alertWindow.classList.add("alert");
@@ -373,7 +373,7 @@ const myProfileSub = async (data) => {
 
 const specAccept = (id) => {
   console.log(getWithExpiry("token"));
-  console.log( parseInt(id));
+  console.log(parseInt(id));
   if (getWithExpiry("token")) {
     return new Promise((resolve, reject) => {
       fetch(reqDebug.concat(`/api/v1/users/request_specialization/${id}/`), {
@@ -387,7 +387,7 @@ const specAccept = (id) => {
             "Gzadcved0Ggks9TOH0ckzm3iUTXyO951KwZihb3oPDoYxbrRX5Ia38PqHxuelQQz",
         },
         body: JSON.stringify({
-          approved: true
+          approved: true,
         }),
       }).then((response) => {
         resolve(response.json());
@@ -397,7 +397,6 @@ const specAccept = (id) => {
     });
   }
 };
-
 
 const forgot = (email) => {
   // console.log(getWithExpiry("token"));
@@ -460,20 +459,17 @@ const specInfoGet = (id) => {
   // console.log(prof?.id, parseInt(id));
   if (getWithExpiry("token")) {
     return new Promise((resolve, reject) => {
-      fetch(
-        reqDebug.concat(`/api/v1/institutions/specializations/${id}`),
-        {
-          method: "GET",
-          headers: {
-            Host: reqDebug,
-            Authorization: "Bearer " + getWithExpiry("token"),
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            "X-CSRFToken":
-              "Gzadcved0Ggks9TOH0ckzm3iUTXyO951KwZihb3oPDoYxbrRX5Ia38PqHxuelQQz",
-          },
-        }
-      ).then((response) => {
+      fetch(reqDebug.concat(`/api/v1/institutions/specializations/${id}`), {
+        method: "GET",
+        headers: {
+          Host: reqDebug,
+          Authorization: "Bearer " + getWithExpiry("token"),
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          "X-CSRFToken":
+            "Gzadcved0Ggks9TOH0ckzm3iUTXyO951KwZihb3oPDoYxbrRX5Ia38PqHxuelQQz",
+        },
+      }).then((response) => {
         resolve(response.json());
         // console.log(response.json())
         // console.log("Bearer " +getWithExpiry("token"))
@@ -670,8 +666,8 @@ const doTask = async (info) => {
       adminInfo = data;
     }
 
-    if(data?.alias && data?.budget_rate == null || data?.budget_rate) {
-      adminSpecs = data
+    if ((data?.alias && data?.budget_rate == null) || data?.budget_rate) {
+      adminSpecs = data;
     }
   }
 
@@ -834,8 +830,8 @@ const doTask = async (info) => {
   // if(!getWithExpiry("token"))
 };
 
-// const frontAddress = "http://localhost:3000";
-const frontAddress = 'http://enrollee.by'
+const frontAddress = "http://localhost:3000";
+// const frontAddress = "http://enrollee.by";
 
 // doTask(newsGet())
 console.log(frontAddress.concat("/send_documents.html"));
@@ -1258,31 +1254,30 @@ if (!authContainer && !authProfile) {
               adPanel.innerHTML = "";
               adminInfo.forEach((e) => {
                 doTask(specInfoGet(e.id));
-        
 
                 setTimeout(() => {
-                  console.log(adminSpecs)
+                  console.log(adminSpecs);
 
-                  adPanel.innerHTML+= `<div class='admin-item f ai'><div class='admin-item_name'>Заявка на специальность ${adminSpecs?.alias}</div><div class='admin-item_confirm' data-value=${e.id}> Поддтвердить?</div></div>`
+                  adPanel.innerHTML += `<div class='admin-item f ai'><div class='admin-item_name'>Заявка на специальность ${adminSpecs?.alias}</div><div class='admin-item_confirm' data-value=${e.id}> Поддтвердить?</div></div>`;
                 }, 2000);
               });
-              setTimeout(()=>{
-                console.log(1)
-                document.querySelectorAll('.admin-item_confirm').forEach(e => {
+              setTimeout(() => {
+                console.log(1);
+                document
+                  .querySelectorAll(".admin-item_confirm")
+                  .forEach((e) => {
+                    e.addEventListener("click", (event) => {
+                      // console.log(1)
+                      //ghj
 
-                e.addEventListener('click', (event)=> {
-                  // console.log(1)
-                  //ghj
-                  
-                  doTask(specAccept(event.target.getAttribute('data-value')))
-                 console.log() 
-                })
-              })},2000)
-             
+                      doTask(
+                        specAccept(event.target.getAttribute("data-value"))
+                      );
+                      console.log();
+                    });
+                  });
+              }, 2000);
             }, 3000);
-            
-            
-            
           }
         } else {
           console.log("Accepted");
@@ -1615,676 +1610,721 @@ if (authProfile) {
   //   form[event.target.name] = event.target.value
   //   console.log(form)
   // }
+    
 
-  document.getElementById("first-next").addEventListener("click", () => {
-    document.querySelectorAll("input").forEach((e) => {
-      if (e.name == "date") {
-        form[e.name] = e.value.split("-").reverse().join(".");
-      } else form[e.name] = e.value;
-    });
-    console.log(profileStatus);
-    if (profileStatus) {
-      doTask(myProfileName(form));
-    } else {
-      doTask(myProfileInit(form));
-    }
-    console.log(form);
-    clearParent(authProfile);
-    authProfile.innerHTML =
-      "<div class='auth-input'>" +
-      "<div class='f'>Данные документа удостоверящие личность" +
-      "<div class='__red'>*</div>" +
-      "</div>" +
-      "<div class='auth-input_bullet-container f'>" +
-      "<div class='auth-input_bullet-item doc-item active'>Паспорт РБ</div>" +
-      "<select class='auth-input_bullet-item doc-item' id='select'>" +
-      "<option value='' selected>Иной</option>" +
-      "<option value='Паспорт иностранного государства' >Паспорт иностранного государства</option>" +
-      "<option value='Вид на жительство в РБ' >Вид на жительство в РБ</option>" +
-      "<option value='Удостоверение беженца' >Удостоверение беженца</option>" +
-      "</select>" +
-      "</div>" +
-      "<div class='f'>" +
-      "<div class='auth-input f f-col'>" +
-      "<label class='f' for='doc_serial'>Серия документа" +
-      "<div class='__red'>*</div>" +
-      "</label>" +
-      "<input type='text' value='' id='doc_serial' maxlength='5' name='doc_serial' pattern=''>" +
-      "</div>" +
-      "<div class='auth-input f f-col'>" +
-      "<label class='f' for='doc_number'>Номер документа" +
-      "<div class='__red'>*</div>" +
-      "</label>" +
-      "<input type='text' id='doc_number' maxlength='15' value='' name='doc_number'>" +
-      "</div>" +
-      "<div class='auth-input f f-col'>" +
-      "<label class='f' for='doc_date'>Дата выдачи" +
-      "<div class='__red'>*</div>" +
-      "</label>" +
-      "<input type='date' id='doc_date' value='' name='doc_date'>" +
-      "</div>" +
-      "</div>" +
-      "<div class='auth-input f f-col'>" +
-      "<label class='f' for='doc_place'>Наименование государственного органа, выдавшего документ" +
-      "<div class='__red'>*</div>" +
-      "</label>" +
-      "<input type='text' id='doc_place' value='' maxlength='100' name='doc_place'>" +
-      "</div>" +
-      "<div class='auth-input f f-col'>" +
-      "<label for='doc_id'>Индификационный номер (при наличии)</label>" +
-      "<input type='text' id='doc_id' value='' name='doc_id'>" +
-      "</div>" +
-      "<a class='auth-link f' href='#' class='f'>С порядком приема и подачи апелляции в учреждении образования ознакомлен(а)" +
-      "<div class='__red'>*</div>" +
-      "</a>" +
-      "<div id='second-next' class='auth-next f'>Перейти далее<div class='auth-container_img'><img src='/img/svg/arrow-next.svg' alt=''></div></div>" +
-      "</div>";
-    if (profileInited) {
-      document.getElementById("doc_serial").value =
-        profile?.personal_document?.series;
-      document.getElementById("doc_number").value =
-        profile?.personal_document?.number;
-      document.getElementById("doc_date").value =
-        profile?.personal_document?.emission_date
-          .split(".")
-          .reverse()
-          .join("-");
-      document.getElementById("doc_place").value =
-        profile?.personal_document?.agency_name;
-      document.getElementById("doc_id").value =
-        profile?.personal_document?.identification_number;
-    }
+                                document.getElementById("first-next").addEventListener("click", () => {
+                                  // console.log(prof)
+                                  document.querySelectorAll("input").forEach((e) => {
+                                    if (e.name == "date") {
+                                      form[e.name] = e.value.split("-").reverse().join(".");
+                                    } else form[e.name] = e.value;
+                                  });
+                                  console.log(form?.name)
+                                  if((form?.date != undefined && form?.date != '' )&& (form?.name != undefined && form?.name != 'undefined' )&& (form?.surname != undefined  && form?.surname != 'undefined') && (form?.lastname != undefined  && form?.lastname != 'undefined') &&( form?.registrate_place != undefined  && form?.registrate_place != 'undefined' )&& (form?.living_place != undefined && form?.living_place != 'undefined')){
+                                  // if(form?.name != 'undefined'){
+                                  console.log(profileStatus);
+                                  if (profileStatus) {
+                                    doTask(myProfileName(form));
+                                  } else {
+                                    doTask(myProfileInit(form));
+                                  }
+                                  console.log(form);
+                                  clearParent(authProfile);
+                                  authProfile.innerHTML =
+                                    "<div class='auth-input'>" +
+                                    "<div class='f'>Данные документа удостоверящие личность" +
+                                    "<div class='__red'>*</div>" +
+                                    "</div>" +
+                                    "<div class='auth-input_bullet-container f'>" +
+                                    "<div class='auth-input_bullet-item doc-item active'>Паспорт РБ</div>" +
+                                    "<select class='auth-input_bullet-item doc-item' id='select'>" +
+                                    "<option value='' selected>Иной</option>" +
+                                    "<option value='Паспорт иностранного государства' >Паспорт иностранного государства</option>" +
+                                    "<option value='Вид на жительство в РБ' >Вид на жительство в РБ</option>" +
+                                    "<option value='Удостоверение беженца' >Удостоверение беженца</option>" +
+                                    "</select>" +
+                                    "</div>" +
+                                    "<div class='f'>" +
+                                    "<div class='auth-input f f-col'>" +
+                                    "<label class='f' for='doc_serial'>Серия документа" +
+                                    "<div class='__red'>*</div>" +
+                                    "</label>" +
+                                    "<input type='text' value='' id='doc_serial' maxlength='5' name='doc_serial' pattern=''>" +
+                                    "</div>" +
+                                    "<div class='auth-input f f-col'>" +
+                                    "<label class='f' for='doc_number'>Номер документа" +
+                                    "<div class='__red'>*</div>" +
+                                    "</label>" +
+                                    "<input type='text' id='doc_number' maxlength='15' value='' name='doc_number'>" +
+                                    "</div>" +
+                                    "<div class='auth-input f f-col'>" +
+                                    "<label class='f' for='doc_date'>Дата выдачи" +
+                                    "<div class='__red'>*</div>" +
+                                    "</label>" +
+                                    "<input type='date' id='doc_date' value='' name='doc_date'>" +
+                                    "</div>" +
+                                    "</div>" +
+                                    "<div class='auth-input f f-col'>" +
+                                    "<label class='f' for='doc_place'>Наименование государственного органа, выдавшего документ" +
+                                    "<div class='__red'>*</div>" +
+                                    "</label>" +
+                                    "<input type='text' id='doc_place' value='' maxlength='100' name='doc_place'>" +
+                                    "</div>" +
+                                    "<div class='auth-input f f-col'>" +
+                                    "<label for='doc_id'>Индификационный номер (при наличии)</label>" +
+                                    "<input type='text' id='doc_id' value='' name='doc_id'>" +
+                                    "</div>" +
+                                    "<a class='auth-link f' href='#' class='f'>С порядком приема и подачи апелляции в учреждении образования ознакомлен(а)" +
+                                    "<div class='__red'>*</div>" +
+                                    "</a>" +
+                                    "<div id='second-next' class='auth-next f'>Перейти далее<div class='auth-container_img'><img src='/img/svg/arrow-next.svg' alt=''></div></div>" +
+                                    "</div>";
+                                  if (profileInited) {
+                                    document.getElementById("doc_serial").value =
+                                      profile?.personal_document?.series;
+                                    document.getElementById("doc_number").value =
+                                      profile?.personal_document?.number;
+                                    document.getElementById("doc_date").value =
+                                      profile?.personal_document?.emission_date
+                                        .split(".")
+                                        .reverse()
+                                        .join("-");
+                                    document.getElementById("doc_place").value =
+                                      profile?.personal_document?.agency_name;
+                                    document.getElementById("doc_id").value =
+                                      profile?.personal_document?.identification_number;
+                                  }
 
-    document.getElementById("doc_serial").onchange = (event) => {
-      form[event.target.name] = event.target.value;
-      console.log(form);
-    };
-    document.getElementById("doc_number").onchange = (event) => {
-      form[event.target.name] = event.target.value;
-      console.log(form);
-    };
-    document.getElementById("doc_date").onchange = (event) => {
-      let date = event.target.value;
+                                  document.getElementById("doc_serial").onchange = (event) => {
+                                    form[event.target.name] = event.target.value;
+                                    console.log(form);
+                                  };
+                                  document.getElementById("doc_number").onchange = (event) => {
+                                    form[event.target.name] = event.target.value;
+                                    console.log(form);
+                                  };
+                                  document.getElementById("doc_date").onchange = (event) => {
+                                    let date = event.target.value;
 
-      date = date.split("-").reverse().join(".");
+                                    date = date.split("-").reverse().join(".");
 
-      form[event.target.name] = date;
-      console.log(form);
-    };
-    document.getElementById("doc_place").onchange = (event) => {
-      form[event.target.name] = event.target.value;
-      console.log(form);
-    };
-    document.getElementById("doc_id").onchange = (event) => {
-      form[event.target.name] = event.target.value;
-      console.log(form);
-    };
-    const select = document.getElementById("select");
-    console.log(select.options);
-    form.doc = "Паспорт РБ";
-    // select.onchange((event)=> {
-    //   form['doc']= event.target.value
-    //   console.log(form)
-    document.querySelectorAll(".doc-item").forEach((e) => {
-      e.addEventListener("click", (event) => {
-        console.log(1);
-        filter(".doc-item", event.target, "active");
-        if (e.innerText == "Паспорт РБ") {
-          form.doc = "Паспорт РБ";
-        } else {
-          document.getElementById("select").addEventListener("change", (e) => {
-            form.doc = e.target.value;
-            console.log(form);
-          });
-        }
-        console.log(form);
-      });
-    });
+                                    form[event.target.name] = date;
+                                    console.log(form);
+                                  };
+                                  document.getElementById("doc_place").onchange = (event) => {
+                                    form[event.target.name] = event.target.value;
+                                    console.log(form);
+                                  };
+                                  document.getElementById("doc_id").onchange = (event) => {
+                                    form[event.target.name] = event.target.value;
+                                    console.log(form);
+                                  };
+                                  const select = document.getElementById("select");
+                                  console.log(select.options);
+                                  form.doc = "Паспорт РБ";
+                                  // select.onchange((event)=> {
+                                  //   form['doc']= event.target.value
+                                  //   console.log(form)
+                                  document.querySelectorAll(".doc-item").forEach((e) => {
+                                    e.addEventListener("click", (event) => {
+                                      console.log(1);
+                                      filter(".doc-item", event.target, "active");
+                                      if (e.innerText == "Паспорт РБ") {
+                                        form.doc = "Паспорт РБ";
+                                      } else {
+                                        document.getElementById("select").addEventListener("change", (e) => {
+                                          form.doc = e.target.value;
+                                          console.log(form);
+                                        });
+                                      }
+                                      console.log(form);
+                                    });
+                                  });
 
-    // select.onselect(console.log(1))
+                                  // select.onselect(console.log(1))
 
-    document.getElementById("second-next").addEventListener("click", () => {
-      document.querySelectorAll("input").forEach((e) => {
-        if (e.name == "doc_date")
-          form[e.name] = e.value.split("-").reverse().join(".");
-        else form[e.name] = e.value;
-        console.log(e.name, e.value);
-      });
-      doTask(myProfilePersonal(form));
-      clearParent(authProfile);
-      authProfile.innerHTML =
-        "<div class='auth-input f f-col'>" +
-        // "<div>Нуждаюсь/не нуждаюсь в общежитии</div>" +
-        "<div class='auth-input_bullet f'>" +
-        "<div class='auth-input_bullet-text'>Нуждаюсь/не нуждаюсь в общежитии</div>" +
-        "<div class='auth-input_bullet-container f'>" +
-        "<div class='auth-input_bullet-item hostel-item active'>Да</div>" +
-        "<div class='auth-input_bullet-item hostel-item'>Нет</div>" +
-        "</div>" +
-        "</div>" +
-        "</div>" +
-        "<div class='auth-ed-container'>" +
-        "<div class='auth-ed-item f'>" +
-        "<div class='auth-input f f-col'>" +
-        "<label for='ed_name' class='f'>Закончил(a) УО" +
-        "<div class='__red'>*</div>" +
-        "</label>" +
-        "<input type='text' name='ed_name0' id='ed_name0'>" +
-        "</div>" +
-        "<div class='auth-input f f-col'>" +
-        "<label for='ed_date' class='f'>В году " +
-        "<div class='__red'>*</div>" +
-        "</label>" +
-        "<input type='text' name='ed_date0' id='ed_date0'>" +
-        "</div>" +
-        "</div>" +
-        "</div>" +
-        "<div class='auth-ed-add m-b10'>Добавить ещё УО</div>" +
-        "<div>" +
-        "<div>Трудовой стаж по профилю специальности</div>" +
-        "<div class='auth-exp f'>" +
-        "<div class='auth-input f f-col'>" +
-        "<label for='exp_years'>Лет</label>" +
-        "<input type='text' id='exp_years' name='exp_years'>" +
-        "</div>" +
-        "<div class='auth-input f f-col'>" +
-        "<label for='exp_months'>Месяцев</label>" +
-        "<input type='text' id='exp_months' name='exp_months'>" +
-        "</div>" +
-        "</div>" +
-        "<div id='third-next' class='auth-next f'>Перейти далее<div class='auth-container_img'><img src='/img/svg/arrow-next.svg' alt=''></div></div>";
+                                                          document.getElementById("second-next").addEventListener("click", () => {
+                                                            document.querySelectorAll("input").forEach((e) => {
+                                                              if (e.name == "doc_date")
+                                                                form[e.name] = e.value.split("-").reverse().join(".");
+                                                              else form[e.name] = e.value;
+                                                              console.log(e.name, e.value);
+                                                            });
+                                                            if((form?.doc_date != undefined && form?.doc_date != '') &&( form?.doc_serial != undefined && form?.doc_serial != 'undefined') &&( form?.doc_number != undefined && form?.doc_number != 'undefined' )&&( form?.doc_place != undefined && form?.doc_place != 'undefined')){
+                                                              console.log(form?.doc_date)
+                                                            doTask(myProfilePersonal(form));
+                                                            clearParent(authProfile);
+                                                            authProfile.innerHTML =
+                                                              "<div class='auth-input f f-col'>" +
+                                                              // "<div>Нуждаюсь/не нуждаюсь в общежитии</div>" +
+                                                              "<div class='auth-input_bullet f'>" +
+                                                              "<div class='auth-input_bullet-text'>Нуждаюсь/не нуждаюсь в общежитии</div>" +
+                                                              "<div class='auth-input_bullet-container f'>" +
+                                                              "<div class='auth-input_bullet-item hostel-item active'>Да</div>" +
+                                                              "<div class='auth-input_bullet-item hostel-item'>Нет</div>" +
+                                                              "</div>" +
+                                                              "</div>" +
+                                                              "</div>" +
+                                                              "<div class='auth-ed-container'>" +
+                                                              "<div class='auth-ed-item f'>" +
+                                                              "<div class='auth-input f f-col'>" +
+                                                              "<label for='ed_name' class='f'>Закончил(a) УО" +
+                                                              
+                                                              "</label>" +
+                                                              "<input type='text' name='ed_name0' id='ed_name0'>" +
+                                                              "</div>" +
+                                                              "<div class='auth-input f f-col'>" +
+                                                              "<label for='ed_date' class='f'>В году " +
 
-      if (document.getElementById("exp_months")) {
-        IMask(document.getElementById("exp_months"), {
-          mask: Number,
-          min: 0,
-          max: 11,
-        });
-      }
+                                                              "</label>" +
+                                                              "<input type='text' name='ed_date0' id='ed_date0'>" +
+                                                              "</div>" +
+                                                              "</div>" +
+                                                              "</div>" +
+                                                              "<div class='auth-ed-add m-b10'>Добавить ещё УО</div>" +
+                                                              "<div>" +
+                                                              "<div>Трудовой стаж по профилю специальности</div>" +
+                                                              "<div class='auth-exp f'>" +
+                                                              "<div class='auth-input f f-col'>" +
+                                                              "<label for='exp_years'>Лет</label>" +
+                                                              "<input type='text' id='exp_years' name='exp_years'>" +
+                                                              "</div>" +
+                                                              "<div class='auth-input f f-col'>" +
+                                                              "<label for='exp_months'>Месяцев</label>" +
+                                                              "<input type='text' id='exp_months' name='exp_months'>" +
+                                                              "</div>" +
+                                                              "</div>" +
+                                                              "<div id='third-next' class='auth-next f'>Перейти далее<div class='auth-container_img'><img src='/img/svg/arrow-next.svg' alt=''></div></div>";
 
-      document.getElementById("ed_name0").onchange = (event) => {
-        form[event.target.name] = event.target.value;
-        console.log(form);
-      };
-      document.getElementById("ed_date0").onchange = (event) => {
-        let date = event.target.value;
-        date = date.split("-").reverse().join(".");
+                                                            if (document.getElementById("exp_months")) {
+                                                              IMask(document.getElementById("exp_months"), {
+                                                                mask: Number,
+                                                                min: 0,
+                                                                max: 11,
+                                                              });
+                                                            }
 
-        form[event.target.name] = date;
-        console.log(form);
-      };
-      document.getElementById("exp_years").onchange = (event) => {
-        form[event.target.name] = event.target.value;
-        console.log(form);
-      };
-      document.getElementById("exp_months").onchange = (event) => {
-        form[event.target.name] = event.target.value;
-        console.log(form);
-      };
-      let i = 0;
-      document.querySelector(".auth-ed-add").addEventListener("click", (e) => {
-        if (i <= 3) {
-          let item =
-            "<div class='auth-ed-item f'>" +
-            "<div class='auth-input f f-col'>" +
-            "<label class='f' for='ed_name'>Закончил(a) УО" +
-            "<div class='__red'>*</div>" +
-            "</label>" +
-            "<input type='text' name='ed_name' id='ed_name'>" +
-            "</div>" +
-            "<div class='auth-input f f-col'>" +
-            "<label class='f' for='ed_date'>В году " +
-            "<div class='__red'>*</div>" +
-            "</label>" +
-            "<input type='text' name='ed_date' id='ed_date'>" +
-            "</div>" +
-            "</div>";
+                                                            document.getElementById("ed_name0").onchange = (event) => {
+                                                              form[event.target.name] = event.target.value;
+                                                              console.log(form);
+                                                            };
+                                                            document.getElementById("ed_date0").onchange = (event) => {
+                                                              let date = event.target.value;
+                                                              date = date.split("-").reverse().join(".");
 
-          document.querySelector(".auth-ed-container").innerHTML += item;
+                                                              form[event.target.name] = date;
+                                                              console.log(form);
+                                                            };
+                                                            document.getElementById("exp_years").onchange = (event) => {
+                                                              form[event.target.name] = event.target.value;
+                                                              console.log(form);
+                                                            };
+                                                            document.getElementById("exp_months").onchange = (event) => {
+                                                              form[event.target.name] = event.target.value;
+                                                              console.log(form);
+                                                            };
+                                                            let i = 0;
+                                                            document.querySelector(".auth-ed-add").addEventListener("click", (e) => {
+                                                              if (i <= 3) {
+                                                                let item =
+                                                                  "<div class='auth-ed-item f'>" +
+                                                                  "<div class='auth-input f f-col'>" +
+                                                                  "<label class='f' for='ed_name'>Закончил(a) УО" +
+                                                                  
+                                                                  "</label>" +
+                                                                  "<input type='text' name='ed_name' id='ed_name'>" +
+                                                                  "</div>" +
+                                                                  "<div class='auth-input f f-col'>" +
+                                                                  "<label class='f' for='ed_date'>В году " +
+                                                                
+                                                                  "</label>" +
+                                                                  "<input type='text' name='ed_date' id='ed_date'>" +
+                                                                  "</div>" +
+                                                                  "</div>";
 
-          let items = {};
-          items = document.querySelectorAll(".auth-ed-item");
+                                                                document.querySelector(".auth-ed-container").innerHTML += item;
 
-          console.log(items);
-          items.forEach((e, i) => {
-            // console.log(e,i)
-            // console.log(e.querySelectorAll('input'))
-            let inputs = e.querySelectorAll("input");
-            inputs.forEach((e) => {
-              if (i != 0) {
-                e.id += i;
-                e.name += i;
-              }
-              // if (form[e.id]) {console.log(e.id)
-              //   e.value = form[e.id]
-              //   console.log(form[e.id])
-              // }
+                                                                let items = {};
+                                                                items = document.querySelectorAll(".auth-ed-item");
 
-              e.onchange = (event) => {
-                form[event.target.name] = event.target.value;
-                console.log(form);
-              };
-            });
-            // console.log(inputs)
-          });
-          // console.log(items, items[0], items)
-          // console.log(i)
-          i++;
-          if (i == 4) e.target.remove();
-        }
-      });
-      form.hostel = false;
+                                                                console.log(items);
+                                                                items.forEach((e, i) => {
+                                                                  // console.log(e,i)
+                                                                  // console.log(e.querySelectorAll('input'))
+                                                                  let inputs = e.querySelectorAll("input");
+                                                                  inputs.forEach((e) => {
+                                                                    if (i != 0) {
+                                                                      e.id += i;
+                                                                      e.name += i;
+                                                                    }
+                                                                    // if (form[e.id]) {console.log(e.id)
+                                                                    //   e.value = form[e.id]
+                                                                    //   console.log(form[e.id])
+                                                                    // }
 
-      document.querySelectorAll(".hostel-item").forEach((e) => {
-        e.addEventListener("click", (event) => {
-          console.log(1);
-          filter(".hostel-item", event.target, "active");
-          if (e.innerText == "Да") {
-            form.hostel = true;
-          } else {
-            form.hostel = false;
-          }
-          console.log(form);
-        });
-      });
+                                                                    e.onchange = (event) => {
+                                                                      form[event.target.name] = event.target.value;
+                                                                      console.log(form);
+                                                                    };
+                                                                  });
+                                                                  // console.log(inputs)
+                                                                });
+                                                                // console.log(items, items[0], items)
+                                                                // console.log(i)
+                                                                i++;
+                                                                if (i == 4) e.target.remove();
+                                                              }
+                                                            });
+                                                            form.hostel = false;
 
-      document.getElementById("third-next").addEventListener("click", () => {
-        doTask(myProfileGrads(form));
-        clearParent(authProfile);
-        authProfile.innerHTML =
-          "<div>Отец</div>" +
-          "<div class='f'>" +
-          "<div class='auth-input f f-col'>" +
-          "<label class='f' for='dad_surname'>Фамилия" +
-          "<div class='__red'>*</div>" +
-          "</label>" +
-          "<input type='text' id='dad_surname' name='dad_surname'>" +
-          "</div>" +
-          "<div class='auth-input f f-col'>" +
-          "<label class='f' for='dad_name'>Имя" +
-          "<div class='__red'>*</div>" +
-          "</label>" +
-          "<input type='text' id='dad_name' name='dad_name'>" +
-          "</div>" +
-          "<div class='auth-input f f-col'>" +
-          "<label class='f' for='dad_lastname'>Отчество" +
-          "<div class='__red'>*</div>" +
-          "</label>" +
-          "<input type='text' id='dad_lastname' name='dad_lastname'>" +
-          "</div>" +
-          "</div>" +
-          "<div class='auth-input f f-col'>" +
-          "<label class='f' for='dad_address'>Проживает по адресу" +
-          "<div class='__red'>*</div>" +
-          "</label>" +
-          "<input type='text' id='dad_address' name='dad_address'>" +
-          "</div>" +
-          "<div class='auth-input f ai'>" +
-          "<label class='f' for='dad_tel'>Мобильный номер" +
-          "<div class='__red'>*</div>" +
-          "</label>" +
-          "<input type='text' id='dad_tel' name='dad_tel'>" +
-          "</div>" +
-          "<div id='fourth-next' class='auth-next f'>Перейти далее<div class='auth-container_img'><img src='/img/svg/arrow-next.svg' alt=''></div></div>";
+                                                            document.querySelectorAll(".hostel-item").forEach((e) => {
+                                                              e.addEventListener("click", (event) => {
+                                                                console.log(1);
+                                                                filter(".hostel-item", event.target, "active");
+                                                                if (e.innerText == "Да") {
+                                                                  form.hostel = true;
+                                                                } else {
+                                                                  form.hostel = false;
+                                                                }
+                                                                console.log(form);
+                                                              });
+                                                            });
 
-        if (profileInited) {
-          document.getElementById("dad_name").value =
-            profile?.father?.first_name;
-          document.getElementById("dad_surname").value =
-            profile?.father?.last_name;
-          document.getElementById("dad_lastname").value =
-            profile?.father?.middle_name;
-          document.getElementById("dad_address").value =
-            profile?.father?.living_address;
-          document.getElementById("dad_tel").value =
-            profile?.father?.phone_number;
-        }
-        document.getElementById("dad_name").onchange = (event) => {
-          form[event.target.name] = event.target.value;
-          console.log(form);
-        };
-        document.getElementById("dad_surname").onchange = (event) => {
-          form[event.target.name] = event.target.value;
-          console.log(form);
-        };
-        document.getElementById("dad_lastname").onchange = (event) => {
-          form[event.target.name] = event.target.value;
-          console.log(form);
-        };
-        document.getElementById("dad_address").onchange = (event) => {
-          form[event.target.name] = event.target.value;
-          console.log(form);
-        };
-        IMask(document.getElementById("dad_tel"), {
-          mask: "+{375}-00-000-00-00",
-        });
+                                                                                      document.getElementById("third-next").addEventListener("click", () => {
+                                                                                        doTask(myProfileGrads(form));
+                                                                                        clearParent(authProfile);
+                                                                                        authProfile.innerHTML =
+                                                                                          "<div>Отец</div>" +
+                                                                                          "<div class='f'>" +
+                                                                                          "<div class='auth-input f f-col'>" +
+                                                                                          "<label class='f' for='dad_surname'>Фамилия" +
+                                                                                          "<div class='__red'>*</div>" +
+                                                                                          "</label>" +
+                                                                                          "<input type='text' id='dad_surname' name='dad_surname'>" +
+                                                                                          "</div>" +
+                                                                                          "<div class='auth-input f f-col'>" +
+                                                                                          "<label class='f' for='dad_name'>Имя" +
+                                                                                          "<div class='__red'>*</div>" +
+                                                                                          "</label>" +
+                                                                                          "<input type='text' id='dad_name' name='dad_name'>" +
+                                                                                          "</div>" +
+                                                                                          "<div class='auth-input f f-col'>" +
+                                                                                          "<label class='f' for='dad_lastname'>Отчество" +
+                                                                                          "<div class='__red'>*</div>" +
+                                                                                          "</label>" +
+                                                                                          "<input type='text' id='dad_lastname' name='dad_lastname'>" +
+                                                                                          "</div>" +
+                                                                                          "</div>" +
+                                                                                          "<div class='auth-input f f-col'>" +
+                                                                                          "<label class='f' for='dad_address'>Проживает по адресу" +
+                                                                                          "<div class='__red'>*</div>" +
+                                                                                          "</label>" +
+                                                                                          "<input type='text' id='dad_address' name='dad_address'>" +
+                                                                                          "</div>" +
+                                                                                          "<div class='auth-input f ai'>" +
+                                                                                          "<label class='f' for='dad_tel'>Мобильный номер" +
+                                                                                          "<div class='__red'>*</div>" +
+                                                                                          "</label>" +
+                                                                                          "<input type='text' id='dad_tel' name='dad_tel'>" +
+                                                                                          "</div>" +
+                                                                                          "<div id='fourth-next' class='auth-next f'>Перейти далее<div class='auth-container_img'><img src='/img/svg/arrow-next.svg' alt=''></div></div>";
 
-        document.getElementById("dad_tel").onchange = (event) => {
-          form[event.target.name] = event.target.value;
-        };
+                                                                                        if (profileInited) {
+                                                                                          document.getElementById("dad_name").value =
+                                                                                            profile?.father?.first_name;
+                                                                                          document.getElementById("dad_surname").value =
+                                                                                            profile?.father?.last_name;
+                                                                                          document.getElementById("dad_lastname").value =
+                                                                                            profile?.father?.middle_name;
+                                                                                          document.getElementById("dad_address").value =
+                                                                                            profile?.father?.living_address;
+                                                                                          document.getElementById("dad_tel").value =
+                                                                                            profile?.father?.phone_number;
+                                                                                        }
+                                                                                        document.getElementById("dad_name").onchange = (event) => {
+                                                                                          form[event.target.name] = event.target.value;
+                                                                                          console.log(form);
+                                                                                        };
+                                                                                        document.getElementById("dad_surname").onchange = (event) => {
+                                                                                          form[event.target.name] = event.target.value;
+                                                                                          console.log(form);
+                                                                                        };
+                                                                                        document.getElementById("dad_lastname").onchange = (event) => {
+                                                                                          form[event.target.name] = event.target.value;
+                                                                                          console.log(form);
+                                                                                        };
+                                                                                        document.getElementById("dad_address").onchange = (event) => {
+                                                                                          form[event.target.name] = event.target.value;
+                                                                                          console.log(form);
+                                                                                        };
+                                                                                        IMask(document.getElementById("dad_tel"), {
+                                                                                          mask: "+{375}-00-000-00-00",
+                                                                                        });
 
-        document.getElementById("fourth-next").addEventListener("click", () => {
-          doTask(myProfileFather(form));
-          clearParent(authProfile);
-          authProfile.innerHTML =
-            "<div>Мать</div>" +
-            "<div class='f'>" +
-            "<div class='auth-input f f-col'>" +
-            "<label class='f' for='mom_surname'>Фамилия" +
-            "<div class='__red'>*</div>" +
-            "</label>" +
-            "<input type='text' id='mom_surname' name='mom_surname'>" +
-            "</div>" +
-            "<div class='auth-input f f-col'>" +
-            "<label class='f' for='mom_name'>Имя" +
-            "<div class='__red'>*</div>" +
-            "</label>" +
-            "<input type='text' id='mom_name' name='mom_name'>" +
-            "</div>" +
-            "<div class='auth-input f f-col'>" +
-            "<label class='f' for='mom_lastname'>Отчество" +
-            "<div class='__red'>*</div>" +
-            "</label>" +
-            "<input type='text' id='mom_lastname' name='mom_lastname'>" +
-            "</div>" +
-            "</div>" +
-            "<div class='auth-input f f-col'>" +
-            "<label class='f' for='mom_address'>Проживает по адресу" +
-            "<div class='__red'>*</div>" +
-            "</label>" +
-            "<input type='text' id='mom_address' name='mom_address'>" +
-            "</div>" +
-            "<div class='auth-input f ai'>" +
-            "<label class='f' for='mom_tel'>Мобильный номер" +
-            "<div class='__red'>*</div>" +
-            "</label>" +
-            "<input type='text' id='mom_tel' name='mom_tel'>" +
-            "</div>" +
-            "<div id='fifth-next' class='auth-next f'>Перейти далее<div class='auth-container_img'><img src='/img/svg/arrow-next.svg' alt=''></div></div>";
+                                                                                        document.getElementById("dad_tel").onchange = (event) => {
+                                                                                          form[event.target.name] = event.target.value;
+                                                                                        };
 
-          if (profileInited) {
-            document.getElementById("mom_name").value =
-              profile?.mother?.first_name;
-            document.getElementById("mom_surname").value =
-              profile?.mother?.last_name;
-            document.getElementById("mom_lastname").value =
-              profile?.mother?.middle_name;
-            document.getElementById("mom_address").value =
-              profile?.mother?.living_address;
-            document.getElementById("mom_tel").value =
-              profile?.mother?.phone_number;
-          }
-          document.getElementById("mom_name").onchange = (event) => {
-            form[event.target.name] = event.target.value;
-            console.log(form);
-          };
-          document.getElementById("mom_surname").onchange = (event) => {
-            form[event.target.name] = event.target.value;
-            console.log(form);
-          };
-          document.getElementById("mom_lastname").onchange = (event) => {
-            form[event.target.name] = event.target.value;
-            console.log(form);
-          };
-          document.getElementById("mom_address").onchange = (event) => {
-            form[event.target.name] = event.target.value;
-            console.log(form);
-          };
+                                                                                                                            document.getElementById("fourth-next").addEventListener("click", () => {
+                                                                                                                              document.querySelectorAll("input").forEach((e) => {
+                                                                                                                      
+                                                                                                                                form[e.name] = e.value;
+                                                                                                                                console.log(e.name, e.value);
+                                                                                                                              });
+                                              if((form?.dad_address != undefined && form?.dad_address != '') &&( form?.dad_lastname != undefined && form?.dad_lastname != 'undefined') &&( form?.dad_name != undefined && form?.dad_name != 'undefined' )&&( form?.dad_surname != undefined && form?.dad_surname != 'undefined')&&( form?.dad_tel != undefined && form?.dad_tel != 'undefined')){
+                                                           
+                                                                                                                              doTask(myProfileFather(form));
+                                                                                                                              clearParent(authProfile);
+                                                                                                                              authProfile.innerHTML =
+                                                                                                                                "<div>Мать</div>" +
+                                                                                                                                "<div class='f'>" +
+                                                                                                                                "<div class='auth-input f f-col'>" +
+                                                                                                                                "<label class='f' for='mom_surname'>Фамилия" +
+                                                                                                                                "<div class='__red'>*</div>" +
+                                                                                                                                "</label>" +
+                                                                                                                                "<input type='text' id='mom_surname' name='mom_surname'>" +
+                                                                                                                                "</div>" +
+                                                                                                                                "<div class='auth-input f f-col'>" +
+                                                                                                                                "<label class='f' for='mom_name'>Имя" +
+                                                                                                                                "<div class='__red'>*</div>" +
+                                                                                                                                "</label>" +
+                                                                                                                                "<input type='text' id='mom_name' name='mom_name'>" +
+                                                                                                                                "</div>" +
+                                                                                                                                "<div class='auth-input f f-col'>" +
+                                                                                                                                "<label class='f' for='mom_lastname'>Отчество" +
+                                                                                                                                "<div class='__red'>*</div>" +
+                                                                                                                                "</label>" +
+                                                                                                                                "<input type='text' id='mom_lastname' name='mom_lastname'>" +
+                                                                                                                                "</div>" +
+                                                                                                                                "</div>" +
+                                                                                                                                "<div class='auth-input f f-col'>" +
+                                                                                                                                "<label class='f' for='mom_address'>Проживает по адресу" +
+                                                                                                                                "<div class='__red'>*</div>" +
+                                                                                                                                "</label>" +
+                                                                                                                                "<input type='text' id='mom_address' name='mom_address'>" +
+                                                                                                                                "</div>" +
+                                                                                                                                "<div class='auth-input f ai'>" +
+                                                                                                                                "<label class='f' for='mom_tel'>Мобильный номер" +
+                                                                                                                                "<div class='__red'>*</div>" +
+                                                                                                                                "</label>" +
+                                                                                                                                "<input type='text' id='mom_tel' name='mom_tel'>" +
+                                                                                                                                "</div>" +
+                                                                                                                                "<div id='fifth-next' class='auth-next f'>Перейти далее<div class='auth-container_img'><img src='/img/svg/arrow-next.svg' alt=''></div></div>";
 
-          IMask(document.getElementById("mom_tel"), {
-            mask: "+{375}-00-000-00-00",
-          });
+                                                                                                                              if (profileInited) {
+                                                                                                                                document.getElementById("mom_name").value =
+                                                                                                                                  profile?.mother?.first_name;
+                                                                                                                                document.getElementById("mom_surname").value =
+                                                                                                                                  profile?.mother?.last_name;
+                                                                                                                                document.getElementById("mom_lastname").value =
+                                                                                                                                  profile?.mother?.middle_name;
+                                                                                                                                document.getElementById("mom_address").value =
+                                                                                                                                  profile?.mother?.living_address;
+                                                                                                                                document.getElementById("mom_tel").value =
+                                                                                                                                  profile?.mother?.phone_number;
+                                                                                                                              }
+                                                                                                                              document.getElementById("mom_name").onchange = (event) => {
+                                                                                                                                form[event.target.name] = event.target.value;
+                                                                                                                                console.log(form);
+                                                                                                                              };
+                                                                                                                              document.getElementById("mom_surname").onchange = (event) => {
+                                                                                                                                form[event.target.name] = event.target.value;
+                                                                                                                                console.log(form);
+                                                                                                                              };
+                                                                                                                              document.getElementById("mom_lastname").onchange = (event) => {
+                                                                                                                                form[event.target.name] = event.target.value;
+                                                                                                                                console.log(form);
+                                                                                                                              };
+                                                                                                                              document.getElementById("mom_address").onchange = (event) => {
+                                                                                                                                form[event.target.name] = event.target.value;
+                                                                                                                                console.log(form);
+                                                                                                                              };
 
-          document.getElementById("mom_tel").onchange = (event) => {
-            form[event.target.name] = event.target.value;
-          };
+                                                                                                                              IMask(document.getElementById("mom_tel"), {
+                                                                                                                                mask: "+{375}-00-000-00-00",
+                                                                                                                              });
 
-          document
-            .getElementById("fifth-next")
-            .addEventListener("click", () => {
-              doTask(myProfileMother(form));
-              clearParent(authProfile);
-              authProfile.innerHTML =
-                "<div class='f f-col jc tac'>" +
-                "<div>Льготы</div>" +
-                "<div>(заполняется при наличии льгот)</div>" +
-                "</div>" +
-                "<div class='auth-input f f-col'>" +
-                "<label class='f' for='privil'>Документ подтверджающий льготы" +
-                "<div class='__red'>*</div>" +
-                "</label>" +
-                "<input type='text' id='privil' name='privil'>" +
-                "</div>" +
-                "<div class='f'>" +
-                "<div class='auth-input f f-col'>" +
-                "<label class='f' for='privil_series'>Серия" +
-                "<div class='__red'>*</div>" +
-                "</label>" +
-                "<input type='text' id='privil_series' name='privil_series' maxlength='5'>" +
-                "</div>" +
-                "<div class='auth-input f f-col'>" +
-                "<label class='f' for='privil_number'>Номер" +
-                "<div class='__red'>*</div>" +
-                "</label>" +
-                "<input type='text' id='privil_number' name='privil_number'>" +
-                "</div>" +
-                "<div class='auth-input f f-col'>" +
-                "<label class='f' for='privil_date'>Дата выдачи" +
-                "<div class='__red'>*</div>" +
-                "</label>" +
-                "<input type='date' id='privil_date' name='privil_date'>" +
-                "</div>" +
-                "</div>" +
-                "<div class='auth-input f f-col'>" +
-                "<label class='f' for='privil_place'>Наименование государственного органа выдавшего документ" +
-                "<div class='__red'>*</div>" +
-                "</label>" +
-                "<input type='text' id='privil_place' name='privil_place'>" +
-                "</div>" +
-                "<div id='sixth-next' class='auth-next f'>Перейти далее<div class='auth-container_img'><img src='/img/svg/arrow-next.svg' alt=''></div></div>";
-              if (profileInited) {
-                document.getElementById("privil").value =
-                  profile?.privilege_document?.name;
-                document.getElementById("privil_series").value =
-                  profile?.privilege_document?.series;
-                document.getElementById("privil_number").value =
-                  profile?.privilege_document?.number;
-                document.getElementById("privil_date").value =
-                  profile?.privilege_document?.emission_date
-                    .split(".")
-                    .reverse()
-                    .join("-");
-                document.getElementById("privil_place").value =
-                  profile?.privilege_document?.agency_name;
-              }
+                                                                                                                              document.getElementById("mom_tel").onchange = (event) => {
+                                                                                                                                form[event.target.name] = event.target.value;
+                                                                                                                              };
 
-              document.getElementById("privil").onchange = (event) => {
-                form[event.target.name] = event.target.value;
-                console.log(form);
-              };
-              document.getElementById("privil_series").onchange = (event) => {
-                form[event.target.name] = event.target.value;
-                console.log(form);
-              };
-              document.getElementById("privil_number").onchange = (event) => {
-                form[event.target.name] = event.target.value;
-                console.log(form);
-              };
-              document.getElementById("privil_date").onchange = (event) => {
-                let date = event.target.value;
-                date = date.split("-").reverse().join(".");
+                                                                                                                                                      document
+                                                                                                                                                        .getElementById("fifth-next")
+                                                                                                                                                        .addEventListener("click", () => {
+                                                                                                                                                          document.querySelectorAll("input").forEach((e) => {
+                                                                                                                      
+                                                                                                                                                            form[e.name] = e.value;
+                                                                                                                                                            console.log(e.name, e.value);
+                                                                                                                                                          });
+                                                                                                                                                          if((form?.mom_address != undefined && form?.mom_address != '') &&( form?.mom_lastname != undefined && form?.mom_lastname != 'undefined') &&( form?.mom_name != undefined && form?.mom_name != 'undefined' )&&( form?.mom_surname != undefined && form?.mom_surname != 'undefined')&&( form?.mom_tel != undefined && form?.mom_tel != 'undefined')){
+                                                
+                                                                                                                                                          doTask(myProfileMother(form));
+                                                                                                                                                          clearParent(authProfile);
+                                                                                                                                                          authProfile.innerHTML =
+                                                                                                                                                            "<div class='f f-col jc tac'>" +
+                                                                                                                                                            "<div>Льготы</div>" +
+                                                                                                                                                            "<div>(заполняется при наличии льгот)</div>" +
+                                                                                                                                                            "</div>" +
+                                                                                                                                                            "<div class='auth-input f f-col'>" +
+                                                                                                                                                            "<label class='f' for='privil'>Документ подтверджающий льготы" +
+                                                                                                                                                            "<div class='__red'>*</div>" +
+                                                                                                                                                            "</label>" +
+                                                                                                                                                            "<input type='text' id='privil' name='privil'>" +
+                                                                                                                                                            "</div>" +
+                                                                                                                                                            "<div class='f'>" +
+                                                                                                                                                            "<div class='auth-input f f-col'>" +
+                                                                                                                                                            "<label class='f' for='privil_series'>Серия" +
+                                                                                                                                                            "<div class='__red'>*</div>" +
+                                                                                                                                                            "</label>" +
+                                                                                                                                                            "<input type='text' id='privil_series' name='privil_series' maxlength='5'>" +
+                                                                                                                                                            "</div>" +
+                                                                                                                                                            "<div class='auth-input f f-col'>" +
+                                                                                                                                                            "<label class='f' for='privil_number'>Номер" +
+                                                                                                                                                            "<div class='__red'>*</div>" +
+                                                                                                                                                            "</label>" +
+                                                                                                                                                            "<input type='text' id='privil_number' name='privil_number'>" +
+                                                                                                                                                            "</div>" +
+                                                                                                                                                            "<div class='auth-input f f-col'>" +
+                                                                                                                                                            "<label class='f' for='privil_date'>Дата выдачи" +
+                                                                                                                                                            "<div class='__red'>*</div>" +
+                                                                                                                                                            "</label>" +
+                                                                                                                                                            "<input type='date' id='privil_date' name='privil_date'>" +
+                                                                                                                                                            "</div>" +
+                                                                                                                                                            "</div>" +
+                                                                                                                                                            "<div class='auth-input f f-col'>" +
+                                                                                                                                                            "<label class='f' for='privil_place'>Наименование государственного органа выдавшего документ" +
+                                                                                                                                                            "<div class='__red'>*</div>" +
+                                                                                                                                                            "</label>" +
+                                                                                                                                                            "<input type='text' id='privil_place' name='privil_place'>" +
+                                                                                                                                                            "</div>" +
+                                                                                                                                                            "<div id='sixth-next' class='auth-next f'>Перейти далее<div class='auth-container_img'><img src='/img/svg/arrow-next.svg' alt=''></div></div>";
+                                                                                                                                                          if (profileInited) {
+                                                                                                                                                            document.getElementById("privil").value =
+                                                                                                                                                              profile?.privilege_document?.name;
+                                                                                                                                                            document.getElementById("privil_series").value =
+                                                                                                                                                              profile?.privilege_document?.series;
+                                                                                                                                                            document.getElementById("privil_number").value =
+                                                                                                                                                              profile?.privilege_document?.number;
+                                                                                                                                                            document.getElementById("privil_date").value =
+                                                                                                                                                              profile?.privilege_document?.emission_date
+                                                                                                                                                                .split(".")
+                                                                                                                                                                .reverse()
+                                                                                                                                                                .join("-");
+                                                                                                                                                            document.getElementById("privil_place").value =
+                                                                                                                                                              profile?.privilege_document?.agency_name;
+                                                                                                                                                          }
 
-                form[event.target.name] = date;
+                                                                                                                                                          document.getElementById("privil").onchange = (event) => {
+                                                                                                                                                            form[event.target.name] = event.target.value;
+                                                                                                                                                            console.log(form);
+                                                                                                                                                          };
+                                                                                                                                                          document.getElementById("privil_series").onchange = (event) => {
+                                                                                                                                                            form[event.target.name] = event.target.value;
+                                                                                                                                                            console.log(form);
+                                                                                                                                                          };
+                                                                                                                                                          document.getElementById("privil_number").onchange = (event) => {
+                                                                                                                                                            form[event.target.name] = event.target.value;
+                                                                                                                                                            console.log(form);
+                                                                                                                                                          };
+                                                                                                                                                          document.getElementById("privil_date").onchange = (event) => {
+                                                                                                                                                            let date = event.target.value;
+                                                                                                                                                            date = date.split("-").reverse().join(".");
 
-                console.log(form);
-              };
-              document.getElementById("privil_place").onchange = (event) => {
-                form[event.target.name] = event.target.value;
-                console.log(form);
-              };
-              document
-                .getElementById("sixth-next")
-                .addEventListener("click", () => {
-                  doTask(myProfilePrivil(form));
-                  clearParent(authProfile);
-                  authProfile.innerHTML =
-                    "<div class='auth-profile_ct'>" +
-                    "<div class = 'f jc-sb'>" +
-                    "<div>Результаты ЦТ</div>" +
-                    "<div>Балл</div>" +
-                    "</div>" +
-                    "<div class = 'f f-col'>" +
-                    "<div class='f ai jc-sb'><div>1</div>" +
-                    "<select class='auth-input_sub-item'>" +
-                    "<option value='' selected>Предмет</option>" +
-                    "<option value='Биология' >Биология</option>" +
-                    "<option value='Всемирная история' >Всемирная история</option>" +
-                    "<option value='География' >География</option>" +
-                    "<option value='Белорусский язык' >Белорусский язык</option>" +
-                    "<option value='Русский язык' >Русский язык</option>" +
-                    "<option value='Математика' >Математика</option>" +
-                    "<option value='Иностранный язык' >Иностранный язык</option>" +
-                    "<option value='История Беларуси' >История Беларуси</option>" +
-                    "<option value='Математика' >Математика</option>" +
-                    "<option value='Обществоведение' >Обществоведение</option>" +
-                    "<option value='Химия' >Химия</option>" +
-                    "<option value='Физика' >Физика</option>" +
-                    "</select>" +
-                    "<div class='auth-input'><input class='__mark' type='text'></div>" +
-                    "</div>" +
-                    "<div class='f ai jc-sb'><div>2</div>" +
-                    "<select class='auth-input_sub-item'>" +
-                    "<option value='' selected>Предмет</option>" +
-                    "<option value='Биология' >Биология</option>" +
-                    "<option value='Всемирная история' >Всемирная история</option>" +
-                    "<option value='География' >География</option>" +
-                    "<option value='Белорусский язык' >Белорусский язык</option>" +
-                    "<option value='Русский язык' >Русский язык</option>" +
-                    "<option value='Математика' >Математика</option>" +
-                    "<option value='Иностранный язык' >Иностранный язык</option>" +
-                    "<option value='История Беларуси' >История Беларуси</option>" +
-                    "<option value='Математика' >Математика</option>" +
-                    "<option value='Обществоведение' >Обществоведение</option>" +
-                    "<option value='Химия' >Химия</option>" +
-                    "<option value='Физика' >Физика</option>" +
-                    "</select>" +
-                    "<div class='auth-input'><input class='__mark' type='text'></div>" +
-                    "</div>" +
-                    "<div class='f ai jc-sb'><div>3</div>" +
-                    "<select class='auth-input_sub-item'>" +
-                    "<option value='' selected>Предмет</option>" +
-                    "<option value='Биология' >Биология</option>" +
-                    "<option value='Всемирная история' >Всемирная история</option>" +
-                    "<option value='География' >География</option>" +
-                    "<option value='Белорусский язык' >Белорусский язык</option>" +
-                    "<option value='Русский язык' >Русский язык</option>" +
-                    "<option value='Математика' >Математика</option>" +
-                    "<option value='Иностранный язык' >Иностранный язык</option>" +
-                    "<option value='История Беларуси' >История Беларуси</option>" +
-                    "<option value='Математика' >Математика</option>" +
-                    "<option value='Обществоведение' >Обществоведение</option>" +
-                    "<option value='Химия' >Химия</option>" +
-                    "<option value='Физика' >Физика</option>" +
-                    "</select>" +
-                    "<div class='auth-input'><input class='__mark' type='text'></div>" +
-                    "</div>" +
-                    "<div class='f ai jc-sb'><div>4</div>" +
-                    "<select class='auth-input_sub-item'>" +
-                    "<option value='' selected>Предмет</option>" +
-                    "<option value='Биология' >Биология</option>" +
-                    "<option value='Всемирная история' >Всемирная история</option>" +
-                    "<option value='География' >География</option>" +
-                    "<option value='Белорусский язык' >Белорусский язык</option>" +
-                    "<option value='Русский язык' >Русский язык</option>" +
-                    "<option value='Математика' >Математика</option>" +
-                    "<option value='Иностранный язык' >Иностранный язык</option>" +
-                    "<option value='История Беларуси' >История Беларуси</option>" +
-                    "<option value='Математика' >Математика</option>" +
-                    "<option value='Обществоведение' >Обществоведение</option>" +
-                    "<option value='Химия' >Химия</option>" +
-                    "<option value='Физика' >Физика</option>" +
-                    "</select>" +
-                    "<div class='auth-input'><input class='__mark' type='text'></div>" +
-                    "</div>" +
-                    "</div>" +
-                    "</div>" +
-                    "<div class='auth-input ai f'><label for='ct'>Балл в аттестате</label><input type='text' id='ct'></div>" +
-                    "<div id='last-next' class='auth-next f'>Подать документы<div class='auth-container_img'><img src='/img/svg/arrow-next.svg' alt=''></div></div>";
+                                                                                                                                                            form[event.target.name] = date;
 
-                  // document.getElementById("privil").value = profile?.privilege_document?.name
+                                                                                                                                                            console.log(form);
+                                                                                                                                                          };
+                                                                                                                                                          document.getElementById("privil_place").onchange = (event) => {
+                                                                                                                                                            form[event.target.name] = event.target.value;
+                                                                                                                                                            console.log(form);
+                                                                                                                                                          };
+                                                                                                                                                                        document
+                                                                                                                                                                          .getElementById("sixth-next")
+                                                                                                                                                                          .addEventListener("click", () => {
+                                                                                                                                                                            document.querySelectorAll("input").forEach((e) => {
+                                                                                                                                                                              if (e.name == "privil_date")
+                                                                                                                                                                                form[e.name] = e.value.split("-").reverse().join(".");
+                                                                                                                                                                              else form[e.name] = e.value;
+                                                                                                                                                                              console.log(e.name, e.value);
+                                                                                                                                                                            });
+if((form?.privil_date != undefined && form?.privil_date != '') &&( form?.privil_number != undefined && form?.privil_number != 'undefined') &&( form?.privil_place != undefined && form?.privil_place != 'undefined' )&&( form?.privil_series != undefined && form?.privil_series != 'undefined')&&( form?.privil != undefined && form?.privil != 'undefined')){
+                                                
+                                                                                                                                                                            doTask(myProfilePrivil(form));
+                                                                                                                                                                            clearParent(authProfile);
+                                                                                                                                                                            authProfile.innerHTML =
+                                                                                                                                                                              "<div class='auth-profile_ct'>" +
+                                                                                                                                                                              "<div class = 'f jc-sb'>" +
+                                                                                                                                                                              "<div>Результаты ЦТ</div>" +
+                                                                                                                                                                              "<div>Балл</div>" +
+                                                                                                                                                                              "</div>" +
+                                                                                                                                                                              "<div class = 'f f-col'>" +
+                                                                                                                                                                              "<div class='f ai jc-sb'><div>1</div>" +
+                                                                                                                                                                              "<select class='auth-input_sub-item'>" +
+                                                                                                                                                                              "<option value='' selected>Предмет</option>" +
+                                                                                                                                                                              "<option value='Биология' >Биология</option>" +
+                                                                                                                                                                              "<option value='Всемирная история' >Всемирная история</option>" +
+                                                                                                                                                                              "<option value='География' >География</option>" +
+                                                                                                                                                                              "<option value='Белорусский язык' >Белорусский язык</option>" +
+                                                                                                                                                                              "<option value='Русский язык' >Русский язык</option>" +
+                                                                                                                                                                              "<option value='Математика' >Математика</option>" +
+                                                                                                                                                                              "<option value='Иностранный язык' >Иностранный язык</option>" +
+                                                                                                                                                                              "<option value='История Беларуси' >История Беларуси</option>" +
+                                                                                                                                                                              "<option value='Математика' >Математика</option>" +
+                                                                                                                                                                              "<option value='Обществоведение' >Обществоведение</option>" +
+                                                                                                                                                                              "<option value='Химия' >Химия</option>" +
+                                                                                                                                                                              "<option value='Физика' >Физика</option>" +
+                                                                                                                                                                              "</select>" +
+                                                                                                                                                                              "<div class='auth-input'><input class='__mark' type='text'></div>" +
+                                                                                                                                                                              "</div>" +
+                                                                                                                                                                              "<div class='f ai jc-sb'><div>2</div>" +
+                                                                                                                                                                              "<select class='auth-input_sub-item'>" +
+                                                                                                                                                                              "<option value='' selected>Предмет</option>" +
+                                                                                                                                                                              "<option value='Биология' >Биология</option>" +
+                                                                                                                                                                              "<option value='Всемирная история' >Всемирная история</option>" +
+                                                                                                                                                                              "<option value='География' >География</option>" +
+                                                                                                                                                                              "<option value='Белорусский язык' >Белорусский язык</option>" +
+                                                                                                                                                                              "<option value='Русский язык' >Русский язык</option>" +
+                                                                                                                                                                              "<option value='Математика' >Математика</option>" +
+                                                                                                                                                                              "<option value='Иностранный язык' >Иностранный язык</option>" +
+                                                                                                                                                                              "<option value='История Беларуси' >История Беларуси</option>" +
+                                                                                                                                                                              "<option value='Математика' >Математика</option>" +
+                                                                                                                                                                              "<option value='Обществоведение' >Обществоведение</option>" +
+                                                                                                                                                                              "<option value='Химия' >Химия</option>" +
+                                                                                                                                                                              "<option value='Физика' >Физика</option>" +
+                                                                                                                                                                              "</select>" +
+                                                                                                                                                                              "<div class='auth-input'><input class='__mark' type='text'></div>" +
+                                                                                                                                                                              "</div>" +
+                                                                                                                                                                              "<div class='f ai jc-sb'><div>3</div>" +
+                                                                                                                                                                              "<select class='auth-input_sub-item'>" +
+                                                                                                                                                                              "<option value='' selected>Предмет</option>" +
+                                                                                                                                                                              "<option value='Биология' >Биология</option>" +
+                                                                                                                                                                              "<option value='Всемирная история' >Всемирная история</option>" +
+                                                                                                                                                                              "<option value='География' >География</option>" +
+                                                                                                                                                                              "<option value='Белорусский язык' >Белорусский язык</option>" +
+                                                                                                                                                                              "<option value='Русский язык' >Русский язык</option>" +
+                                                                                                                                                                              "<option value='Математика' >Математика</option>" +
+                                                                                                                                                                              "<option value='Иностранный язык' >Иностранный язык</option>" +
+                                                                                                                                                                              "<option value='История Беларуси' >История Беларуси</option>" +
+                                                                                                                                                                              "<option value='Математика' >Математика</option>" +
+                                                                                                                                                                              "<option value='Обществоведение' >Обществоведение</option>" +
+                                                                                                                                                                              "<option value='Химия' >Химия</option>" +
+                                                                                                                                                                              "<option value='Физика' >Физика</option>" +
+                                                                                                                                                                              "</select>" +
+                                                                                                                                                                              "<div class='auth-input'><input class='__mark' type='text'></div>" +
+                                                                                                                                                                              "</div>" +
+                                                                                                                                                                              "<div class='f ai jc-sb'><div>4</div>" +
+                                                                                                                                                                              "<select class='auth-input_sub-item'>" +
+                                                                                                                                                                              "<option value='' selected>Предмет</option>" +
+                                                                                                                                                                              "<option value='Биология' >Биология</option>" +
+                                                                                                                                                                              "<option value='Всемирная история' >Всемирная история</option>" +
+                                                                                                                                                                              "<option value='География' >География</option>" +
+                                                                                                                                                                              "<option value='Белорусский язык' >Белорусский язык</option>" +
+                                                                                                                                                                              "<option value='Русский язык' >Русский язык</option>" +
+                                                                                                                                                                              "<option value='Математика' >Математика</option>" +
+                                                                                                                                                                              "<option value='Иностранный язык' >Иностранный язык</option>" +
+                                                                                                                                                                              "<option value='История Беларуси' >История Беларуси</option>" +
+                                                                                                                                                                              "<option value='Математика' >Математика</option>" +
+                                                                                                                                                                              "<option value='Обществоведение' >Обществоведение</option>" +
+                                                                                                                                                                              "<option value='Химия' >Химия</option>" +
+                                                                                                                                                                              "<option value='Физика' >Физика</option>" +
+                                                                                                                                                                              "</select>" +
+                                                                                                                                                                              "<div class='auth-input'><input class='__mark' type='text'></div>" +
+                                                                                                                                                                              "</div>" +
+                                                                                                                                                                              "</div>" +
+                                                                                                                                                                              "</div>" +
+                                                                                                                                                                              "<div class='auth-input ai f'><label for='ct'>Балл в аттестате</label><input type='text' value= '' id='ct'></div>" +
+                                                                                                                                                                              "<div id='last-next' class='auth-next f'>Подать документы<div class='auth-container_img'><img src='/img/svg/arrow-next.svg' alt=''></div></div>";
 
-                  // document
-                  // .querySelectorAll(".auth-input_sub-item")
-                  // .forEach((elem, i) =>
-                  //   elem.addEventListener("change", (e) => {
-                  //     i += 1;
-                  //     e.target.value = ;
-                  //     i -= 1;
-                  //     console.log(form);
-                  //     // form[sub].name = e.target.value console.log(form)
-                  //   })
-                  // );
+                                                                                                                                                                            // document.getElementById("privil").value = profile?.privilege_document?.name
 
-                  document
-                    .querySelectorAll(".auth-input_sub-item")
-                    .forEach((elem, i) =>
-                      elem.addEventListener("change", (e) => {
-                        i += 1;
-                        form[`subname${i}`] = e.target.value;
-                        i -= 1;
-                        console.log(form);
-                        // form[sub].name = e.target.value console.log(form)
-                      })
-                    );
-                  if (document.getElementById("ct")) {
-                    IMask(document.getElementById("ct"), {
-                      mask: Number,
-                      min: 0,
-                      max: 10,
-                    });
-                    document.getElementById("ct").onchange = (e) => {
-                      form.ct = e.target.value;
-                    };
-                  }
+                                                                                                                                                                            // document
+                                                                                                                                                                            // .querySelectorAll(".auth-input_sub-item")
+                                                                                                                                                                            // .forEach((elem, i) =>
+                                                                                                                                                                            //   elem.addEventListener("change", (e) => {
+                                                                                                                                                                            //     i += 1;
+                                                                                                                                                                            //     e.target.value = ;
+                                                                                                                                                                            //     i -= 1;
+                                                                                                                                                                            //     console.log(form);
+                                                                                                                                                                            //     // form[sub].name = e.target.value console.log(form)
+                                                                                                                                                                            //   })
+                                                                                                                                                                            // );
 
-                  // form.ct = document.getElementById('ct').value
-                  // document.querySelectorAll('input').forEach((elem,i)=>elem.addEventListener('change', (e)=>{
-                  //   const sub= 'sub' +i+1
-                  //   form[sub['mark']] = e.target.valueconsole.log(form)
-                  // }))
+                                                                                                                                                                            document
+                                                                                                                                                                              .querySelectorAll(".auth-input_sub-item")
+                                                                                                                                                                              .forEach((elem, i) =>
+                                                                                                                                                                                elem.addEventListener("change", (e) => {
+                                                                                                                                                                                  i += 1;
+                                                                                                                                                                                  form[`subname${i}`] = e.target.value;
+                                                                                                                                                                                  i -= 1;
+                                                                                                                                                                                  console.log(form);
+                                                                                                                                                                                  // form[sub].name = e.target.value console.log(form)
+                                                                                                                                                                                })
+                                                                                                                                                                              );
+                                                                                                                                                                            if (document.getElementById("ct")) {
+                                                                                                                                                                              IMask(document.getElementById("ct"), {
+                                                                                                                                                                                mask: Number,
+                                                                                                                                                                                min: 0,
+                                                                                                                                                                                max: 10,
+                                                                                                                                                                              });
+                                                                                                                                                                              document.getElementById("ct").onchange = (e) => {
+                                                                                                                                                                                form.ct = e.target.value;
+                                                                                                                                                                              };
+                                                                                                                                                                            }
 
-                  document.querySelectorAll(".__mark").forEach((elem, i) => {
-                    IMask(elem, {
-                      mask: Number,
-                      min: 0,
-                      max: 100,
-                    });
-                    elem.onchange = (e) => {
-                      i += 1;
+                                                                                                                                                                            document.getElementById("ct").onchange = (event) => {
+                                                                                                                                                            form.ct = event.target.value;
+                                                                                                                                                            console.log(form);
+                                                                                                                                                          };
+                                                                                                                                                                            document.querySelectorAll(".__mark").forEach((elem, i) => {
+                                                                                                                                                                              IMask(elem, {
+                                                                                                                                                                                mask: Number,
+                                                                                                                                                                                min: 0,
+                                                                                                                                                                                max: 100,
+                                                                                                                                                                              });
+                                                                                                                                                                              elem.onchange = (e) => {
+                                                                                                                                                                                i += 1;
 
-                      form[`submark${i}`] = e.target.value;
-                      i -= 1;
-                      console.log(form);
-                      // form[sub].target = e.target.valueconsole.log(form)
-                    };
-                  });
+                                                                                                                                                                                form[`submark${i}`] = e.target.value;
+                                                                                                                                                                                i -= 1;
+                                                                                                                                                                                console.log(form);
+                                                                                                                                                                                // form[sub].target = e.target.valueconsole.log(form)
+                                                                                                                                                                              };
+                                                                                                                                                                            });
+                                                                                                                                                                            
 
-                  // document.getElementById('select').addEventListener('change', (e)=>{form.doc = e.target.value console.log(form)})
-                  document
-                    .getElementById("last-next")
-                    .addEventListener("click", () => {
-                      doTask(myProfileSub(form));
-                      // doTask(myProfile(form));
-                      // TEST
+                                                                                                                                                                            // document.getElementById('select').addEventListener('change', (e)=>{form.doc = e.target.value console.log(form)})
+                                                                                                                                                                                    document
+                                                                                                                                                                                      .getElementById("last-next")
+                                                                                                                                                                                      .addEventListener("click", () => {
+                                                                                                                                                                                        doTask(myProfileSub(form));
+                                                                                                                                                                                        // doTask(myProfile(form));
+                                                                                                                                                                                        // TEST
 
-                      document.location.href = "/send_documents.html";
-                    });
-                });
-            });
-        });
-      });
-    });
-  });
+                                                                                                                                                                                        document.location.href = "/send_documents.html";
+                                                                                                                                                                                      });
+                                                                                                                                                                                    }  else {
+                                                                                                                                                                                      createAlert('Заполните поля с знаком "*"')
+                                                                                                                                                                                    } 
+                                                                                                                                                                          });
+                                                                                                                                                                        }  else {
+                                                                                                                                                                          createAlert('Заполните поля с знаком "*"')
+                                                                                                                                                                        }    
+                                                                                                                                                        });
+                                                                                                                                                      }  else {
+                                                                                                                                                        createAlert('Заполните поля с знаком "*"')
+                                                                                                                                                      }
+                                                                                                                            });
+                                                                                                                                                              
+                                                                                      });
+                                                                                    }  else {
+                                                                                      createAlert('Заполните поля с знаком "*"')
+                                                                                    }               
+                                                          });
+                                                        }  else {
+                                                          createAlert('Заполните поля с знаком "*"')
+                                                        }
+                                });
+                             
 } else {
   if (!document.querySelector(".admin-panel")) doTask(myProfileGet());
 }
