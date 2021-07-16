@@ -1,4 +1,27 @@
 .block-container
     .admin-panel
         p Заявки
+        .admin-panel_first.f.jc-sb
+            .auth-input.f.f-col
+                label(for='surname') Фамилия
+                   
+                input(type='text' value='Колпаковский' id='surname' placeholder="Фамилия" name='surname')
+            .auth-input.f.f-col
+                label(for='name') Имя
+                  
+                input(type='text' id='name' value='Никита' placeholder='Имя' name='name') 
+            .auth-input.f.f-col
+                label(for='lastname') Отчество
+                
+                input(type='text' id='lastname' value='Сергеевич' placeholder='Отчество' name='lastname')
+        .admin-panel_first.f.jc-sb
+            .auth-input.w-100.f.f-col
+                label(for='surname') Индификационный номер
+                .f.ai
+                    input(type='text' value='sadasdadasda' id='pass_id' placeholder='ИД' name='pass_id')
+                    .admin-panel_search.m-t10 Поиск
         .admin-info.f.f-col.tac.m-t10
+        .admin-controls.f.jc-sb.m-l10
+            .admin-controls_item Отменить регистрацию
+            .admin-controls_item Сохранить
+            .admin-controls_item Проверено
