@@ -1740,7 +1740,7 @@ if (!authContainer && !authProfile) {
         .querySelector(".stats-selects_update")
         .addEventListener("click", () => {
           document.querySelector(".stats-info").innerHTML = ''
-          if (form.ed_alias != 'ИУП') {
+          if (form.ed_alias != 'ЧИУП') {
             document.querySelector(".stats-info").innerHTML =
             '<tr class="fav-ei_item f jc-sb">' +
             "<td>Специальность</td>" +
