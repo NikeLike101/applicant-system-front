@@ -1750,7 +1750,9 @@ if (!authContainer && !authProfile) {
             "</tr>";
           if (nameSelect.value != "") doTask(institutionID(form?.ed_id));
           } else {
-            document.querySelector(".stats-info").innerHTML = "<img src='./img/chiup1.png'><img src='./img/chiup2.png'><img src='./img/chiup3.png'><img src='./img/chiup4.png'>"
+            window.location.href = "/chiup.html"
+            // document.querySelector(".stats-info").innerHTML = "<img src='./img/chiup1.png'><img src='./img/chiup2.png'><img src='./img/chiup3.png'><img src='./img/chiup4.png'>"
+
           }
          
         });
@@ -2345,33 +2347,29 @@ if (authProfile) {
                             "</div>" +
                             "<div class='auth-input f f-col'>" +
                             "<label class='f' for='privil'>Документ подтверджающий льготы" +
-                            "<div class='__red'>*</div>" +
+                            
                             "</label>" +
                             "<input type='text' id='privil' name='privil'>" +
                             "</div>" +
                             "<div class='f'>" +
                             "<div class='auth-input f f-col'>" +
                             "<label class='f' for='privil_series'>Серия" +
-                            "<div class='__red'>*</div>" +
                             "</label>" +
                             "<input type='text' id='privil_series' name='privil_series' maxlength='5'>" +
                             "</div>" +
                             "<div class='auth-input f f-col'>" +
                             "<label class='f' for='privil_number'>Номер" +
-                            "<div class='__red'>*</div>" +
                             "</label>" +
                             "<input type='text' id='privil_number' name='privil_number'>" +
                             "</div>" +
                             "<div class='auth-input f f-col'>" +
                             "<label class='f' for='privil_date'>Дата выдачи" +
-                            "<div class='__red'>*</div>" +
                             "</label>" +
                             "<input type='date' id='privil_date' name='privil_date'>" +
                             "</div>" +
                             "</div>" +
                             "<div class='auth-input f f-col'>" +
                             "<label class='f' for='privil_place'>Наименование государственного органа выдавшего документ" +
-                            "<div class='__red'>*</div>" +
                             "</label>" +
                             "<input type='text' id='privil_place' name='privil_place'>" +
                             "</div>" +
@@ -2440,18 +2438,6 @@ if (authProfile) {
                                   else form[e.name] = e.value;
                                   console.log(e.name, e.value);
                                 });
-                              if (
-                                form?.privil_date != undefined &&
-                                form?.privil_date != "" &&
-                                form?.privil_number != undefined &&
-                                form?.privil_number != "undefined" &&
-                                form?.privil_place != undefined &&
-                                form?.privil_place != "undefined" &&
-                                form?.privil_series != undefined &&
-                                form?.privil_series != "undefined" &&
-                                form?.privil != undefined &&
-                                form?.privil != "undefined"
-                              ) {
                                 doTask(myProfilePrivil(form));
                                 clearParent(authProfile);
                                 authProfile.innerHTML =
@@ -2611,9 +2597,7 @@ if (authProfile) {
                                     document.location.href =
                                       "/send_documents.html";
                                   });
-                              } else {
-                                createAlert('Заполните поля с знаком "*"');
-                              }
+                             
                             });
                         } else {
                           createAlert('Заполните поля с знаком "*"');
