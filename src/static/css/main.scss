@@ -185,7 +185,12 @@ body {
 
   &-info {
     max-height: 500px;
+    width: 60%;
     overflow-y: scroll;
+
+    .auth-input input {
+      width: 80%;
+    }
   }
 
   &-controls {

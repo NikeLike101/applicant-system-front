@@ -11,6 +11,7 @@ let profile = {};
 let prof = {};
 let profileInAdmin = {};
 let specStatus = false;
+let specID
 let adminInfo = [];
 let adminSpecs = [];
 let profileInited = true;
@@ -372,7 +373,7 @@ const myProfileSub = async (data) => {
 };
 //zxc
 
-const specAccept = (id) => {
+const specAccept = (id, newProfile) => {
   console.log(getWithExpiry("token"));
   console.log(parseInt(id));
   if (getWithExpiry("token")) {
@@ -427,7 +428,15 @@ const forgot = (email) => {
   // }
 };
 
-const specPost = (id) => {
+const specPost = (id, ed_type) => {
+  let is_paid, is_budget
+  if(ed_type == 'Платной') {
+    is_paid = true
+    is_budget = false
+  } else {
+    is_budget = true
+    is_paid = false
+  }
   console.log(getWithExpiry("token"));
   console.log(prof?.id, parseInt(id));
   if (getWithExpiry("token")) {
@@ -445,6 +454,8 @@ const specPost = (id) => {
         body: JSON.stringify({
           profile: prof?.id,
           specialization: parseInt(id),
+          is_paid,
+          is_budget
         }),
       }).then((response) => {
         resolve(response.json());
@@ -683,6 +694,7 @@ const doTask = async (info) => {
     if (data[0]?.approved == true || data[0]?.approved == false) {
       console.log(123);
       profileInAdmin = data[0]?.profile;
+      specID = data[0]?.id
     }
   }
 
@@ -1222,7 +1234,7 @@ if (!authContainer && !authProfile) {
                     specPost(
                       document
                         .getElementById("specs")
-                        .options[d].value.split("|")[1]
+                        .options[d].value.split("|")[1], form.ed_type
                     )
                   );
                 }
@@ -1290,50 +1302,48 @@ if (!authContainer && !authProfile) {
 
             const fillInfo = () => {
               console.log(profileInAdmin);
-              let prof = Object.entries(profileInAdmin);
-              console.log(prof);
               let info = document.querySelector(".admin-info");
 
               info.innerHTML =
                 "<div class='auth-input f f-col'>" +
                 "<label class='f' for='doc_number'>Фамилия" +
                 "</label>" +
-                "<input type='text' id='last_name' maxlength='15' value='' name='last_name'>" +
+                `<input type='text' id='last_name' maxlength='15' value='${profileInAdmin.last_name}' name='last_name'>` +
                 "</div>" +
                 "<div class='auth-input f f-col'>" +
                 "<label class='f' for='doc_number'>Имя" +
                 "</label>" +
-                "<input type='text' id='first_name' maxlength='15' value='' name='first_name'>" +
+                `<input type='text' id='first_name' maxlength='15' value='${profileInAdmin.first_name}' name='first_name'>` +
                 "</div>" +
                 "<div class='auth-input f f-col'>" +
                 "<label class='f' for='doc_number'>Отчество" +
                 "</label>" +
-                "<input type='text' id='middle_name' maxlength='15' value='' name='middle_name'>" +
+                `<input type='text' id='middle_name' maxlength='15' value='${profileInAdmin.middle_name}' name='middle_name'>` +
                 "</div>" +
                 "<div class='auth-input f f-col'>" +
                 "<label class='f' for='doc_number'>Пол" +
                 "</label>" +
-                "<input type='text' id='gender' maxlength='15' value='' name='gender'>" +
+                `<input type='text' id='gender' maxlength='15' value='${profileInAdmin.gender}' name='gender'>` +
                 "</div>" +
                 "<div class='auth-input f f-col'>" +
                 "<label class='f' for='doc_number'>Адрес регистрации" +
                 "</label>" +
-                "<input type='text' id='registration_address' value='' name='registration_address'>" +
+                `<input type='text' id='registration_address' value='${profileInAdmin.registration_address}' name='registration_address'>` +
                 "</div>" +
                 "<div class='auth-input f f-col'>" +
                 "<label class='f' for='doc_number'>Адрес проживания" +
                 "</label>" +
-                "<input type='text' id='living_address' value='' name='living_address'>" +
+                `<input type='text' id='living_address' value='${profileInAdmin.living_address}' name='living_address'>` +
                 "</div>" +
                 "<div class='auth-input f f-col'>" +
                 "<label class='f' for='doc_number'>Дата рождения" +
                 "</label>" +
-                "<input type='date' id='birth_date'  value='' name='birth_date'>" +
+                `<input type='date' id='birth_date'  value='${profileInAdmin.birth_date.split('.').reverse().join('-')}' name='birth_date'>` +
                 "</div>" +
                 "<div class='auth-input f f-col'>" +
                 "<label class='f' for='doc_number'>Номер телефона" +
                 "</label>" +
-                "<input type='text' id='phone'='15' value='' name='phone'>" +
+                `<input type='text' id='phone'='15' value='${profileInAdmin.phone}' name='phone'>` +
                 "</div>" +
 
 
@@ -1343,32 +1353,32 @@ if (!authContainer && !authProfile) {
                 "<div class='auth-input f f-col'>" +
                 "<label class='f' for='doc_number'>Документ" +
                 "</label>" +
-                "<input type='text' id='document_type' maxlength='15' value='' name='document_type'>" +
+                `<input type='text' id='document_type' maxlength='15' value='${profileInAdmin.personal_document.document_type}' name='document_type'>` +
                 "</div>" +
                 "<div class='auth-input f f-col'>" +
                 "<label class='f' for='doc_number'>Номер документа" +
                 "</label>" +
-                "<input type='text' id='number' maxlength='15' value='' name='number'>" +
+                `<input type='text' id='number' maxlength='15' value='${profileInAdmin.personal_document.number}' name='number'>` +
                 "</div>" +
                 "<div class='auth-input f f-col'>" +
                 "<label class='f' for='doc_number'>Дата выдачи" +
                 "</label>" +
-                "<input type='text' id='emission_date' maxlength='15' value='' name='emission_date'>" +
+                `<input type='date' id='emission_date' value='${profileInAdmin.personal_document.emission_date.split('.').reverse().join('-')}' name='emission_date'>` +
                 "</div>" +
                 "<div class='auth-input f f-col'>" +
                 "<label class='f' for='doc_number'>Индификационный номер" +
                 "</label>" +
-                "<input type='text' id='identification_number' maxlength='15' value='' name='identification_number'>" +
+                `<input type='text' id='identification_number' maxlength='15' value='${profileInAdmin.personal_document.identification_number}' name='identification_number'>` +
                 "</div>" +
                 "<div class='auth-input f f-col'>" +
                 "<label class='f' for='doc_number'>Серия документа" +
                 "</label>" +
-                "<input type='text' id='series' maxlength='15' value='' name='series'>" +
+                `<input type='text' id='series'  value='${profileInAdmin.personal_document.series}' name='series'>` +
                 "</div>" +
                 "<div class='auth-input f f-col'>" +
                 "<label class='f' for='doc_number'>Учереждение выдачи" +
                 "</label>" +
-                "<input type='text' id='agency_name' maxlength='15' value='' name='agency_name'>" +
+                `<input type='text' id='agency_name' value='${profileInAdmin.personal_document.agency_name}' name='agency_name'>` +
                 "</div>" +
 
 
@@ -1378,27 +1388,27 @@ if (!authContainer && !authProfile) {
                 "<div class='auth-input f f-col'>" +
                 "<label class='f' for='doc_number'>Фамилия отца" +
                 "</label>" +
-                "<input type='text' id='father_last_name' value='' name='father_last_name'>" +
+                `<input type='text' id='father_last_name' value='${profileInAdmin.father.last_name}' name='father_last_name'>` +
                 "</div>" +
                 "<div class='auth-input f f-col'>" +
                 "<label class='f' for='doc_number'>Имя отца" +
                 "</label>" +
-                "<input type='text' id='father_first_name' maxlength='15' value='' name='father_first_name'>" +
+                `<input type='text' id='father_first_name' value='${profileInAdmin.father.first_name}' name='father_first_name'>` +
                 "</div>" +
                 "<div class='auth-input f f-col'>" +
                 "<label class='f' for='doc_number'>Отчество отца" +
                 "</label>" +
-                "<input type='text' id='father_middle_name' maxlength='15' value='' name='father_middle_name'>" +
+                `<input type='text' id='father_middle_name' value='${profileInAdmin.father.middle_name}' name='father_middle_name'>` +
                 "</div>" +
                 "<div class='auth-input f f-col'>" +
                 "<label class='f' for='doc_number'>Адрес отца" +
                 "</label>" +
-                "<input type='text' id='father_living_address' maxlength='15' value='' name='father_living_address'>" +
+                `<input type='text' id='father_living_address' value='${profileInAdmin.father.living_address}' name='father_living_address'>` +
                 "</div>" +
                 "<div class='auth-input f f-col'>" +
                 "<label class='f' for='doc_number'>Номер телефона отца" +
                 "</label>" +
-                "<input type='text' id='father_phone_number' maxlength='15' value='' name='father_phone_number'>" +
+                `<input type='text' id='father_phone_number' value='${profileInAdmin.father.phone_number}' name='father_phone_number'>` +
                 "</div>" +
 
 
@@ -1408,27 +1418,27 @@ if (!authContainer && !authProfile) {
                 "<div class='auth-input f f-col'>" +
                 "<label class='f' for='doc_number'>Фамилия матери" +
                 "</label>" +
-                "<input type='text' id='mother_last_name'  value='' name='mother_last_name'>" +
+                `<input type='text' id='mother_last_name' value='${profileInAdmin.mother.last_name}' name='mother_last_name'>` +
                 "</div>" +
                 "<div class='auth-input f f-col'>" +
                 "<label class='f' for='doc_number'>Имя матери" +
                 "</label>" +
-                "<input type='text' id='mother_first_name' maxlength='15' value='' name='mother_first_name'>" +
+                `<input type='text' id='mother_first_name' value='${profileInAdmin.mother.first_name}' name='mother_first_name'>` +
                 "</div>" +
                 "<div class='auth-input f f-col'>" +
                 "<label class='f' for='doc_number'>Отчество матери" +
-                 "</label>" +
-                "<input type='text' id='mother_middle_name' maxlength='15' value='' name='mother_middle_name'>" +
+                "</label>" +
+                `<input type='text' id='mother_middle_name' value='${profileInAdmin.mother.middle_name}' name='mother_middle_name'>` +
                 "</div>" +
                 "<div class='auth-input f f-col'>" +
                 "<label class='f' for='doc_number'>Адрес матери" +
-                  "</label>" +
-                "<input type='text' id='mother_living_address' maxlength='15' value='' name='mother_living_address'>" +
+                "</label>" +
+                `<input type='text' id='mother_living_address' value='${profileInAdmin.mother.living_address}' name='mother_living_address'>` +
                 "</div>" +
                 "<div class='auth-input f f-col'>" +
                 "<label class='f' for='doc_number'>Номер телефона матери" +
-                 "</label>" +
-                "<input type='text' id='mother_phone_number' maxlength='15' value='' name='mother_phone_number'>" +
+                "</label>" +
+                `<input type='text' id='mother_phone_number' value='${profileInAdmin.mother.phone_number}' name='mother_phone_number'>` +
                 "</div>" +
 
 
@@ -1437,55 +1447,56 @@ if (!authContainer && !authProfile) {
                 "<div class='auth-input f f-col'>" +
                 "<label class='f' for='doc_number'>Документ подтверджающий льготы" +
                 "</label>" +
-                "<input type='text' id='privilege_name' maxlength='15' value='' name='privilege_name'>" +
+                `<input type='text' id='privilege_name' value='${profileInAdmin.privilege_document.name}' name='privilege_name'>` +
                 "</div>" +
                 "<div class='auth-input f f-col'>" +
                 "<label class='f' for='doc_number'>Серия документа" +
                 "</label>" +
-                "<input type='text' id='privilege_series' maxlength='15' value='' name='privilege_series'>" +
+                `<input type='text' id='privilege_series'  value='${profileInAdmin.privilege_document.series}' name='privilege_series'>` +
                 "</div>" +
                 "<div class='auth-input f f-col'>" +
                 "<label class='f' for='doc_number'>Номер документа" +
                 "</label>" +
-                "<input type='text' id='privilege_number' maxlength='15' value='' name='privilege_number'>" +
+                `<input type='text' id='privilege_number' value='${profileInAdmin.privilege_document.number}' name='privilege_number'>` +
                 "</div>"+
                 "<div class='auth-input f f-col'>" +
                 "<label class='f' for='doc_number'>Дата выдачи документа" +
                 "</label>" +
-                "<input type='text' id='privilege_emisson_date' maxlength='15' value='' name='privilege_emisson_date'>" +
+                `<input type='date' id='privilege_emisson_date' value='${profileInAdmin.privilege_document.emission_date.split('.').reverse().join('-')}' name='privilege_emisson_date'>` +
                 "</div>"+
                 "<div class='auth-input f f-col'>" +
                 "<label class='f' for='doc_number'>Наименование государственного органа выдавшего документ" +
                 "</label>" +
-                "<input type='text' id='privilege_agency_name' maxlength='15' value='' name='privilege_agency_name'>" +
+                `<input type='text' id='privilege_agency_name' value='${profileInAdmin.privilege_document.agency_name}' name='privilege_agency_name'>` +
                 "</div>"+
 
 
 
 
                 "<div class='auth-input f f-col'>" +
-                "<label class='f' for='doc_number'>1-ый предмет" +
+                `<label class='f' for='doc_number'>${profileInAdmin.subjects[0].name}` +
                 "</label>" +
-                "<input type='text' id='result1' maxlength='15' value='' name='result1'>" +
+                `<input type='text' id='result1' maxlength='15' value='${profileInAdmin.subjects[0].result}' name='result1'>` +
                 "</div>"+
                 "<div class='auth-input f f-col'>" +
-                "<label class='f' for='doc_number'>2-ой предмет" +
+                `<label class='f' for='doc_number'>${profileInAdmin.subjects[1].name}` +
                 "</label>" +
-                "<input type='text' id='result2' maxlength='15' value='' name='result2'>" +
+                `<input type='text' id='result2' maxlength='15' value='${profileInAdmin.subjects[1].result}' name='result2'>` +
                 "</div>"+
                 "<div class='auth-input f f-col'>" +
-                "<label class='f' for='doc_number'>3-ий предмет" +
+                `<label class='f' for='doc_number'>${profileInAdmin.subjects[2].name}` +
             
                 "</label>" +
-                "<input type='text' id='result3' maxlength='15' value='' name='result3'>" +
+                `<input type='text' id='result3' maxlength='15' value='${profileInAdmin.subjects[2].result}' name='result3'>` +
                 "</div>"+
                 "<div class='auth-input f f-col'>" +
-                "<label class='f' for='doc_number'>4-ый предмет" +
+                `<label class='f' for='doc_number'>${profileInAdmin.subjects[3].name}` +
                 
                 "</label>" +
-                "<input type='text' id='result4' maxlength='15' value='' name='result4'>" +
+                `<input type='text' id='result4' maxlength='15' value='${profileInAdmin.subjects[3].result}' name='result4'>` +
                 "</div>"
                 
+                // info.getElementById('last_name').value = 
                 
             };
 
@@ -1502,6 +1513,17 @@ if (!authContainer && !authProfile) {
                   createAlert("Ошибка. Заполните все поля.");
                 }
               });
+            document.getElementById('approve').addEventListener("click", ()=> {
+              console.log(Object.entries(profileInAdmin).length)
+              if(Object.entries(profileInAdmin).length >=1) {
+                // console.log(specID)
+                doTask(specAccept(specID))
+              } else {
+                createAlert('Введите данные для поиска, что бы подтвердить заявку')
+              }
+              
+              
+            })
           }
         } else {
           console.log("Accepted");
