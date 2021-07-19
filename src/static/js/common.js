@@ -1085,7 +1085,8 @@ if (!authContainer && !authProfile) {
     !document.querySelector(".news-main") &&
     !document.querySelector(".docs-list") &&
     !document.querySelector(".stats") &&
-    !document.querySelector(".contact-title")
+    !document.querySelector(".contact-title") &&
+    !document.querySelector(".chiup")
   ) {
     if (getWithExpiry("token")) {
       // if(true) {
