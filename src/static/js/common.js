@@ -20,8 +20,8 @@ let entryStatus = false;
 let profileStatus = false;
 let docFull = false;
 let specs = [];
-// let reqDebug = "http://localhost:8000";
-let reqDebug = "http://enrollee.by";
+let reqDebug = "http://localhost:8000";
+// let reqDebug = "http://enrollee.by";
 
 const alertWindow = document.createElement("div");
 alertWindow.classList.add("alert");
@@ -857,8 +857,8 @@ const doTask = async (info) => {
   // if(!getWithExpiry("token"))
 };
 
-// const frontAddress = "http://localhost:3000";
-const frontAddress = "http://enrollee.by";
+const frontAddress = "http://localhost:3000";
+// const frontAddress = "http://enrollee.by";
 
 // doTask(newsGet())
 console.log(frontAddress.concat("/send_documents.html"));
@@ -1098,7 +1098,7 @@ if (!authContainer && !authProfile) {
     !document.querySelector(".docs-list") &&
     !document.querySelector(".stats") &&
     !document.querySelector(".contact-title") &&
-    !document.querySelector(".chiup")
+    !document.querySelector(".ed_page")
   ) {
     if (getWithExpiry("token")) {
       // if(true) {
@@ -1763,7 +1763,12 @@ if (!authContainer && !authProfile) {
         .querySelector(".stats-selects_update")
         .addEventListener("click", () => {
           document.querySelector(".stats-info").innerHTML = ''
-          if (form.ed_alias != 'ЧИУП') {
+          if (form.ed_alias == 'ЧИУП') {
+            window.location.href = "/chiup.html"
+          } else if (form.ed_alias =='МГЭК') {
+            window.location.href = "/mgek.html"
+          }
+           else {
             document.querySelector(".stats-info").innerHTML =
             '<tr class="fav-ei_item f jc-sb">' +
             "<td>Специальность</td>" +
@@ -1772,8 +1777,7 @@ if (!authContainer && !authProfile) {
             "<td>Проходной балл Платный</td>" +
             "</tr>";
           if (nameSelect.value != "") doTask(institutionID(form?.ed_id));
-          } else {
-            window.location.href = "/chiup.html"
+            
             // document.querySelector(".stats-info").innerHTML = "<img src='./img/chiup1.png'><img src='./img/chiup2.png'><img src='./img/chiup3.png'><img src='./img/chiup4.png'>"
 
           }
