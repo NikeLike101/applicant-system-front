@@ -11,11 +11,17 @@
 
 .fm {
     display: flex;
+
+    &-row {
+        flex-direction: row;
+    }
 }
 
 .fm-col {
     flex-direction: column;
 }
+
+
 
 .block {
     &-container {
@@ -54,3 +60,22 @@
     }
 }
 
+.stats {
+
+    &-info {
+        font-size: 12px;
+        width: 100%;
+    }
+}
+
+.fav {
+    &-actions {
+        margin-right: 0;
+    }
+
+    &-ei {
+        border: none;
+        padding: 0;
+        font-size: 8px;
+    }
+}
