@@ -20,8 +20,8 @@ let entryStatus = false;
 let profileStatus = false;
 let docFull = false;
 let specs = [];
-// let reqDebug = "http://localhost:8000";
-let reqDebug = "http://enrollee.by";
+let reqDebug = "http://localhost:8000";
+// let reqDebug = "http://enrollee.by";
 
 const alertWindow = document.createElement("div");
 alertWindow.classList.add("alert");
@@ -1914,7 +1914,7 @@ if (authProfile) {
         "<option value='Удостоверение беженца' >Удостоверение беженца</option>" +
         "</select>" +
         "</div>" +
-        "<div class='f'>" +
+        "<div class='f fm-col'>" +
         "<div class='auth-input f f-col'>" +
         "<label class='f' for='doc_serial'>Серия документа" +
         "<div class='__red'>*</div>" +
