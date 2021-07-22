@@ -31,6 +31,51 @@
     }
 }
 
+.auth {
+
+    &-input {
+
+        &_bullet {
+
+            &-item {
+
+                &#select {
+                    width: 50%;
+                }
+            }
+        }
+    }
+
+    &_enter {
+        width: 100%;
+
+        &-buttons {
+            width: 100%;
+        }
+
+        &-confirm {
+            text-align: center;
+            color: #000;
+            margin-bottom: 30px;
+        }
+
+        &-forgot {
+            left: 65%;
+        }
+
+        &-back {
+            color: #000;
+            text-align: center;
+        }
+    
+        &-link{
+            margin-bottom: 30px;
+        }
+    }
+
+
+}
+
 
 
 .header {

@@ -20,8 +20,8 @@ let entryStatus = false;
 let profileStatus = false;
 let docFull = false;
 let specs = [];
-// let reqDebug = "http://localhost:8000";
-let reqDebug = "http://enrollee.by";
+let reqDebug = "http://localhost:8000";
+// let reqDebug = "http://enrollee.by";
 
 const alertWindow = document.createElement("div");
 alertWindow.classList.add("alert");
@@ -983,7 +983,7 @@ if (authContainer) {
         "<input type='password' id='pass' name='pass'>" +
         // "<div class='auth_enter-forgot'>Забыли пароль?</div>"+
         "</div>" +
-        "<div class='auth_enter-buttons f jc-sb'>" +
+        "<div class='auth_enter-buttons f fm-col jc-sb'>" +
         "<div class='auth_enter-confirm' id='signup-button'>Зарегистрироваться</div>" +
         "<div class='auth_enter-back'>Отмена</div>" +
         "</div>";
@@ -1040,7 +1040,7 @@ if (authContainer) {
         '<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" fill="#fff" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512;" xml:space="preserve"><g><g><path d="M463.315,48.684c-64.91-64.912-170.529-64.912-235.439,0c-42.666,42.666-58.166,104.143-43.068,160.789L4.878,389.403 c-3.122,3.122-4.877,7.356-4.877,11.771v94.177c0,9.194,7.454,16.648,16.648,16.648h94.177c4.415,0,8.649-1.755,11.771-4.877 l23.544-23.544c3.122-3.122,4.876-7.356,4.876-11.771v-30.44h30.44c4.415,0,8.649-1.754,11.771-4.876l23.545-23.545 c3.122-3.122,4.876-7.356,4.876-11.771v-30.44h30.44c4.415,0,8.649-1.755,11.771-4.877l38.664-38.664 c56.652,15.1,118.123-0.403,160.789-43.068C528.227,219.216,528.227,113.597,463.315,48.684z M439.774,260.581 c-35.956,35.956-88.336,48.228-136.702,32.026c-5.988-2.007-12.595-0.452-17.06,4.013l-40.816,40.816h-40.192 c-9.194,0-16.648,7.454-16.648,16.648v40.192l-13.793,13.793h-40.192c-9.194,0-16.648,7.454-16.648,16.648v40.192l-13.791,13.793 H33.298V408.07l182.081-182.081c4.465-4.465,6.02-11.072,4.014-17.06c-16.201-48.366-3.929-100.746,32.026-136.702 c51.93-51.928,136.424-51.929,188.355,0C491.702,124.157,491.702,208.653,439.774,260.581z"/> </g></g><g><g><path d="M416.229,95.773c-25.965-25.966-68.213-25.966-94.177,0c-25.965,25.965-25.965,68.211,0,94.177 c25.964,25.965,68.211,25.966,94.177,0C442.194,163.986,442.194,121.739,416.229,95.773z M392.685,166.405 c-12.982,12.981-34.106,12.981-47.089,0c-12.982-12.982-12.982-34.106,0-47.089c12.982-12.981,34.106-12.982,47.089,0 C405.667,132.299,405.667,153.423,392.685,166.405z"/></g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g></svg>' +
         "</div>" +
         "</div>" +
-        "<div class='auth_enter-buttons f jc-sb'>" +
+        "<div class='auth_enter-buttons f fm-col jc-sb'>" +
         "<div class='auth_enter-confirm' id='login-button'>Войти</div>" +
         "<div class='auth_enter-back'>Отмена</div>" +
         "</div>";
@@ -2047,7 +2047,7 @@ if (authProfile) {
             "</div>" +
             "</div>" +
             "<div class='auth-ed-container'>" +
-            "<div class='auth-ed-item f'>" +
+            "<div class='auth-ed-item f fm-col'>" +
             "<div class='auth-input f f-col'>" +
             "<label for='ed_name' class='f'>Закончил(a) УО" +
             "</label>" +
@@ -2063,7 +2063,7 @@ if (authProfile) {
             "<div class='auth-ed-add m-b10'>Добавить ещё УО</div>" +
             "<div>" +
             "<div>Трудовой стаж по профилю специальности</div>" +
-            "<div class='auth-exp f'>" +
+            "<div class='auth-exp f fm-col'>" +
             "<div class='auth-input f f-col'>" +
             "<label for='exp_years'>Лет</label>" +
             "<input type='text' id='exp_years' name='exp_years'>" +
@@ -2176,7 +2176,7 @@ if (authProfile) {
               clearParent(authProfile);
               authProfile.innerHTML =
                 "<div>Отец</div>" +
-                "<div class='f'>" +
+                "<div class='f fm-col'>" +
                 "<div class='auth-input f f-col'>" +
                 "<label class='f' for='dad_surname'>Фамилия" +
                 "<div class='__red'>*</div>" +
@@ -2202,7 +2202,7 @@ if (authProfile) {
                 "</label>" +
                 "<input type='text' id='dad_address' name='dad_address'>" +
                 "</div>" +
-                "<div class='auth-input f ai'>" +
+                "<div class='auth-input f ai fm-col'>" +
                 "<label class='f' for='dad_tel'>Мобильный номер" +
                 "<div class='__red'>*</div>" +
                 "</label>" +
@@ -2269,7 +2269,7 @@ if (authProfile) {
                     clearParent(authProfile);
                     authProfile.innerHTML =
                       "<div>Мать</div>" +
-                      "<div class='f'>" +
+                      "<div class='f fm-col'>" +
                       "<div class='auth-input f f-col'>" +
                       "<label class='f' for='mom_surname'>Фамилия" +
                       "<div class='__red'>*</div>" +
@@ -2295,7 +2295,7 @@ if (authProfile) {
                       "</label>" +
                       "<input type='text' id='mom_address' name='mom_address'>" +
                       "</div>" +
-                      "<div class='auth-input f ai'>" +
+                      "<div class='auth-input f ai fm-col'>" +
                       "<label class='f' for='mom_tel'>Мобильный номер" +
                       "<div class='__red'>*</div>" +
                       "</label>" +
@@ -2378,7 +2378,7 @@ if (authProfile) {
                             "</label>" +
                             "<input type='text' id='privil' name='privil'>" +
                             "</div>" +
-                            "<div class='f'>" +
+                            "<div class='f fm-col'>" +
                             "<div class='auth-input f f-col'>" +
                             "<label class='f' for='privil_series'>Серия" +
                             "</label>" +
