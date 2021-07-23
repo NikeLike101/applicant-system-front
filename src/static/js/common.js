@@ -20,8 +20,8 @@ let entryStatus = false;
 let profileStatus = false;
 let docFull = false;
 let specs = [];
-let reqDebug = "http://localhost:8000";
-// let reqDebug = "http://enrollee.by";
+// let reqDebug = "http://localhost:8000";
+let reqDebug = "http://enrollee.by";
 
 const alertWindow = document.createElement("div");
 alertWindow.classList.add("alert");
@@ -546,7 +546,7 @@ const myProfileGet = () => {
   }
 };
 
-const institutionsGet = async (params) => {
+const institutionsGet = (params) => {
   // console.log(encodeURI(reqDebug.concat("/api/v1/institutions/", params)));
   // let enc = new string_transcoder("utf-8");
 
@@ -689,6 +689,16 @@ const doTask = async (info) => {
   //     adminSpecs = data;
   //   }
   // }
+
+  if (document.querySelector('.ed_page') && data?.specializations) {
+    if ( data?.specializations[0]?.statistics_files) {
+
+      console.log(data)
+      const images = document.querySelector('.ed_page')
+      images.innerHTML += `<img src=${'http://enrollee.by'.concat(data.specializations[0].statistics_files)}>`
+      console.log(images,'enrollee.by'.concat(data.specializations[0].statistics_files))
+    } 
+  }
   console.log(data);
   if (data !== undefined) {
     if (data[0]?.approved == true || data[0]?.approved == false) {
@@ -802,10 +812,11 @@ const doTask = async (info) => {
   }
 
   if (
-    document.querySelector(".contact-search") ||
+    (document.querySelector(".contact-search") ||
     document.querySelector(".post-filters_main") ||
-    document.querySelector(".stats")
+    document.querySelector(".stats")) && data
   ) {
+    console.log(data)
     if (data[0]?.alias) {
       eis = data;
     }
@@ -1561,6 +1572,12 @@ if (!authContainer && !authProfile) {
       //   }, 1000);
 
       //   console.log(news)
+    }
+
+    if (document.getElementById('mgek')) {
+      console.log(1)
+      doTask(institutionID(3))
+//mgek
     }
 
     if (document.querySelector(".contact-title")) {
