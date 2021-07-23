@@ -39,6 +39,10 @@
 
             &-item {
 
+                &:first-child {
+                    white-space: nowrap;
+                }
+
                 &#select {
                     width: 50%;
                 }
@@ -60,7 +64,8 @@
         }
 
         &-forgot {
-            left: 65%;
+            left: unset;
+            right: 10%;
         }
 
         &-back {
