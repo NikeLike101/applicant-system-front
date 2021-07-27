@@ -53,7 +53,7 @@ const createAlert = (text, actionFirst = "ОК", actionLast = null) => {
   if (alertWindow.querySelector("#alert-first"))
     alertWindow.querySelector("#alert-first").addEventListener("click", () => {
       alertWindow.classList.remove("show");
-      window.location.reload();
+      // window.location.reload();
       if (alertWindow.querySelector("#alert-last"))
         alertWindow
           .querySelector(".alert-buttons")
@@ -1831,8 +1831,21 @@ if (authProfile) {
 
   console.log(1111);
   const form = {};
+  document.getElementById("surname").onkeyup = function(event){
+    this.value = this.value.replace(/[a-zA-Z0-9]/g, '');
+    };
+    
+    document.getElementById("name").onkeyup = function(event){
+      this.value = this.value.replace(/[a-zA-Z0-9]/g, '');
+      };
+
+      document.getElementById("lastname").onkeyup = function(event){
+        this.value = this.value.replace(/[a-zA-Z0-9]/g, '');
+        };
+
 
   document.getElementById("surname").onchange = (event) => {
+    
     form[event.target.name] = event.target.value;
     console.log(form);
   };
@@ -1981,6 +1994,18 @@ if (authProfile) {
         document.getElementById("doc_id").value =
           profile?.personal_document?.identification_number;
       }
+
+      document.getElementById("doc_number").onkeyup = function(event){
+        this.value = this.value.replace(/[а-яА-Я]/g, '');
+        };
+
+        document.getElementById("doc_serial").onkeyup = function(event){
+          this.value = this.value.replace(/[а-яА-Я]/g, '');
+          };
+
+            document.getElementById("doc_place").onkeyup = function(event){
+              this.value = this.value.replace(/[a-zA-Z]/g, '');
+              };
 
       document.getElementById("doc_serial").onchange = (event) => {
         form[event.target.name] = event.target.value;
@@ -2658,6 +2683,7 @@ if (authProfile) {
       });
     } else {
       createAlert('Заполните поля с знаком "*"');
+     
     }
   });
 } else {
