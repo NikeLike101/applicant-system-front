@@ -1,0 +1,23 @@
+extends ../layout/forgot-layout.pug
+block vars
+    - var title = 'Забыли пароль';
+
+block container 
+    include ../includes/container.pug
+        
+        block content
+            .block-container
+                .forgot-container.f.f-col.ai.jc 
+                    .forgot-title Создайте новый пароль
+                    .forgot.f.f-col 
+                        .forgot-status
+                        .auth-input.f.f-col
+                            label.f(for='first_pass') Введите новый пароль
+                                
+                            input(type='text' value='' id='first_pass'  name='first_pass')
+                        .auth-input.f.f-col
+                            label.f(for='first_pass') Повторно ведите новый пароль
+                                
+                            input(type='text' value='' id='second_pass'  name='seco_pass')
+
+                        .forgot-btn Изменить пароль
