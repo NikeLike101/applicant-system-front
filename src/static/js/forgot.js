@@ -1,7 +1,9 @@
-console.log(this.location.href,1)
 
-const token = window.location.href.slice(33)
-// console.log('enrollee.by/users/reset_password/asd'.slice(33))
+const url = window.location.href.split('/')
+// tok[tok.length-1]
+const token = url[url.length-1]
+console.log(token)
+
 
 document.querySelector('.forgot-btn').addEventListener('click', ()=> {
     const passes = [document.getElementById('first_pass').value, document.getElementById('second_pass').value]
