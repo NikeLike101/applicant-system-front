@@ -11,7 +11,7 @@ document.querySelector('.forgot-btn').addEventListener('click', ()=> {
     if(passes[0] != passes[1]) {
         document.querySelector('.forgot-status').innerHTML='Пароли не совпадают, проверьте введеные данные'
     } else {
-        fetch(`enrollee.by/users/reset_password_confirm/${token}/`, {
+        fetch(`http://enrollee.by/api/v1/users/reset_password_confirm/${token}/`, {
             method: "PATCH",
             headers: {
 
