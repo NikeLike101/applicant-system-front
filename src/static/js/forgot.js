@@ -1,6 +1,5 @@
 
 const url = window.location.href.split('/')
-// tok[tok.length-1]
 const token = url[url.length-1]
 console.log(token)
 
@@ -16,10 +15,6 @@ document.querySelector('.forgot-btn').addEventListener('click', ()=> {
         fetch(`http://enrollee.by/api/v1/users/reset_password_confirm/${token}/`, {
             method: "PATCH",
             headers: {
-
-              // Authorization:
-              //   "Bearer " +
-              //   "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjIwMTE5NzQwLCJqdGkiOiIwMzM4OWYwNjI4ZDk0ODhiYTYwOWU5NDI4OWY5ZmYyYSIsInVzZXJfaWQiOjF9.y_LMYmJEvp9tQObj2YUzz8NftoXjwJi64PBD4GWyjxg",
               Accept: "application/json",
               "Content-Type": "application/json",
               "X-CSRFToken":
@@ -30,8 +25,9 @@ document.querySelector('.forgot-btn').addEventListener('click', ()=> {
               password2: passes[1],
             }),
           }).then((response) => {
-            resolve(response.json());
-            // console.log(resolve(response.json().email))
-          });    
+              if (response.ok) {
+                  window.location.replace("http://enrollee.by");
+              }
+          });
     }
 })
