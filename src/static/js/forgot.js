@@ -13,7 +13,7 @@ document.querySelector('.forgot-btn').addEventListener('click', ()=> {
         document.querySelector('.forgot-status').innerHTML='Пароли не совпадают, проверьте введеные данные'
     } else {
         fetch(`http://enrollee.by/api/v1/users/reset_password_confirm/${token}/`, {
-            method: "PATCH",
+            method: "PUT",
             headers: {
               Accept: "application/json",
               "Content-Type": "application/json",
