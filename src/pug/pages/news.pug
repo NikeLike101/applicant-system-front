@@ -1,0 +1,11 @@
+extends ../layout/layout.pug
+block vars
+	- var title = 'Новости';
+
+block container 
+	include ../includes/container.pug
+		block header
+			include ../includes/header.pug
+		block content
+			include ../includes/news/content.pug   
+              

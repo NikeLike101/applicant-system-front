@@ -1,11 +1,5 @@
-extends ../layout/layout.pug
+extends ../layout/choose-platform-layout.pug
 block vars
-	- var title = 'Главная';
-
-block container 
-	include ../includes/container.pug
-		block header
-			include ../includes/header.pug
-		block content
-			include ../includes/main/content.pug   
-              
+    - var title = 'Выбор платформы';
+block content
+    include ../includes/choose-platform/content.pug 

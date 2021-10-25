@@ -13,10 +13,36 @@ body {
   font-family: "Montserrat", sans-serif;
 }
 
+.choose {
+  width: 100%;
+  height: 100vh;
+  background: $mainTheme;
+  display: flex;
+
+  &-item {
+    width: 50%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+
+    justify-content: center;
+    text-align: center;
+    p {
+      padding: 10px 15px;
+      border: 3px dotted #277400;
+    }
+  }
+}
+
+.back-to-choose {
+  position: absolute;
+  width: 40px;
+}
+
 .alert {
   position: absolute;
   display: none;
-  background: #5f0;
+  background: $mainTheme;
   padding: 14px;
   border-radius: 5px;
   left: 50%;
@@ -99,7 +125,7 @@ body {
   width: 100%;
   min-height: 100vh;
   padding: 0 10%;
-  background: url(https://images.wallpaperscraft.ru/image/zelenyy_polosy_vertikalnyy_temnyy_ten_16422_1920x1080.jpg);
+  background: url(https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fwallpapercave.com%2Fwp%2Fzba6Y89.jpg&f=1&nofb=1);
   background-repeat: no-repeat;
   background-size: cover;
 }
