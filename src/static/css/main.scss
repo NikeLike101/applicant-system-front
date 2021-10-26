@@ -15,12 +15,21 @@ body {
 
 
 .schedule {
-
+  height: 100vh;
+  flex-direction: column;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   &-item {
 
-
     &#uo {
+      
+      font-size: 40px;
       color: $mainTheme;
+      text-align: center;
+      padding: 40px;
+      width: 50%;
+      border-radius: 30px;
     }
   }
 
