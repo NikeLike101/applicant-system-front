@@ -13,6 +13,39 @@ body {
   font-family: "Montserrat", sans-serif;
 }
 
+
+.schedule {
+
+  &-item {
+
+
+    &#uo {
+      color: $mainTheme;
+    }
+  }
+
+  &-buttons {
+
+    &_search {
+
+    }
+    
+    &_select {
+
+      & option {
+        color: $mainTheme;
+      }
+    }
+  }
+
+  &-table {
+
+    & th {
+      background: $mainTheme;
+    }
+  }
+}
+
 .choose {
   width: 100%;
   height: 100vh;
